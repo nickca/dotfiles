@@ -5,7 +5,12 @@ ZSH=$HOME/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="af-magic"
+#ZSH_THEME="af-magic"
+# Load a different theme based on type of host.
+# Prompt is an apple on Mac hosts.
+[[ `uname` == 'Darwin' ]] && export ZSH_THEME="apple"
+# Prompt is a green % on Linux hosts.
+[[ `uname` == 'Linux' ]] && export ZSH_THEME="terminalparty"
 
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
@@ -62,8 +67,9 @@ for dir in $pathdirs; do
     fi
 done
 
-#set the console font, but only if this is a tty
-[[ `tty` =~ \/dev\/tty ]] && setfont sun12x22
+# On Linux hosts only
+# set the console font, but only if this is a tty
+[[ ( `uname` == 'Linux' && `tty` =~ \/dev\/tty ) ]] && setfont sun12x22
 
 FORTUNE=`fortune -s | head -n1`
 echo $FORTUNE
