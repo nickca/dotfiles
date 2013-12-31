@@ -1,5 +1,5 @@
 " Nick's K-Rad vimrc - MacVim version
-" Last Updated: Thu Feb 28 01:56:17 2013
+" Last Updated: Tue 31 Dec 2013 02:59:14 AM CST
 " Set various options {{{
 set nocompatible
 syntax on
@@ -32,7 +32,6 @@ let g:EclimDisabled=1
 " For MacVim GUI, set the following options {{{
 if has("gui_macvim")
 	set guiheadroom=20
-	"set guifont=Andale\ Mono:h14
 	set guifont=DejaVu\ Sans\ Mono:h14
     "set guioptions-=T
     if exists("+lines")
@@ -47,6 +46,19 @@ if has("gui_macvim")
     " Menu bar
     menu Tools.Transmit\ Sync :FTPSync<CR>
     tmenu Tools.Transmit\ Sync FTP Sync with Transmit.
+endif
+" }}}
+" For Gnome (Linux) GUI, set the following options {{{
+if has("gui_gnome")
+	set guiheadroom=20
+	set guifont=Inconsolata
+    "set guioptions-=T
+    if exists("+lines")
+        set lines=30
+    endif
+    if exists("+columns")
+        set columns=108
+    endif
 endif
 " }}}
 
