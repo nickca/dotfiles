@@ -45,6 +45,7 @@ source $ZSH/oh-my-zsh.sh
 pathdirs=(
     ~/bin
     /usr/local/bin
+    /usr/texbin
     /usr/X11/bin
     /usr/X11R6/bin
     /opt/local/bin
