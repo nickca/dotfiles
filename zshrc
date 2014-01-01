@@ -39,8 +39,26 @@ COMPLETION_WAITING_DOTS="true"
 source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
-export PATH=/home/nickca/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
-export PATH=$PATH:/usr/local/share/SIMH/bin
+#export PATH=/home/nickca/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+#export PATH=$PATH:/usr/local/share/SIMH/bin
+# Set the PATH intelligently.
+pathdirs=(
+    ~/bin
+    /usr/local/bin
+    /usr/X11/bin
+    /usr/X11R6/bin
+    /opt/local/bin
+    /opt/local/X11/bin
+    /usr/local/sbin
+    /usr/games
+    /usr/local/share/SIMH/bin
+)
+for dir in $pathdirs; do
+    if [ -d $dir ]; then
+        PATH="$PATH:$dir"
+    fi
+done
+
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
 HISTSIZE=1000
@@ -54,18 +72,6 @@ export USE_CCACHE=1
 
 #RPROMPT='%{$fg_bold[white]%}$FORTUNE]-%{$fg_bold[grey]%}-.%{$reset_color%}'
 RPROMPT='%{$fg_bold[white]%}%m %t]-%{$fg_bold[grey]%}-.%{$reset_color%}'
-
-#set path
-pathdirs=(
-    /usr/local/bin
-    /opt/local/bin
-    ~/bin
-)
-for dir in $pathdirs; do
-    if [ -d $dir ]; then
-        PATH="$PATH:$dir"
-    fi
-done
 
 # On Linux hosts only
 # set the console font, but only if this is a tty
