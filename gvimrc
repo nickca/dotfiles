@@ -1,13 +1,20 @@
 " Nick's K-Rad vimrc - MacVim version
-" Last Updated: Tue Dec 31 22:33:28 2013
+" Last Updated: Thu 02 Jan 2014 06:40:21 AM CST
 " Set various options {{{
 set nocompatible
 syntax on
 "set backup
 set foldmethod=marker
 set incsearch
+set ignorecase
+set smartcase
+set gdefault
+set showmatch
 set showcmd
 set wildmenu
+set nowrap
+set textwidth=80
+set formatoptions=qrn12
 filetype plugin indent on
 " Default Tab/Indent options
 set tabstop=4
