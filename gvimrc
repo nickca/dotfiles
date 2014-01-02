@@ -1,5 +1,5 @@
 " Nick's K-Rad vimrc - MacVim version
-" Last Updated: Thu 02 Jan 2014 06:40:21 AM CST
+" Last Updated: Thu Jan  2 07:10:30 2014
 " Set various options {{{
 set nocompatible
 syntax on
@@ -39,7 +39,7 @@ let g:EclimDisabled=1
 " For MacVim GUI, set the following options {{{
 if has("gui_macvim")
 	set guiheadroom=20
-	set guifont=Inconsolata:h18
+	set guifont=Inconsolata\ for\ Powerline:h18
     "set guioptions-=T
     if exists("+lines")
         set lines=30
@@ -105,8 +105,12 @@ tmenu ToolBar.syntaxon Restore syntax color (after netrw save)
 " Custom status bar {{{
 set laststatus=2
 "set statusline=%t\ %1*%m%*%r%h%w\ [Format=%{&ff}]\ [Type=%Y]\ [A=\%03.3b/H=\%02.2B]%=%-14.(Pos=%l,%c%V%)\ [%p%%/%P]
-set statusline=%t\ %1*%m%*%r%h%w\ [Buf#=%n]\ [%Y/%{&ff}]\ \t%{ShowTab()}\ [A=\%03.3b/H=\%02.2B]%=%-14.(Pos=%l,%c%V\ E:%{eclim#project#util#ProjectStatusLine()}%)\ [%p%%/%P]
-hi User1 term=inverse,bold gui=inverse,bold ctermfg=Red guifg=Red
+"set statusline=%t\ %1*%m%*%r%h%w\ [Buf#=%n]\ [%Y/%{&ff}]\ \t%{ShowTab()}\ [A=\%03.3b/H=\%02.2B]%=%-14.(Pos=%l,%c%V\ E:%{eclim#project#util#ProjectStatusLine()}%)\ [%p%%/%P]
+"hi User1 term=inverse,bold gui=inverse,bold ctermfg=Red guifg=Red
+"Switched to Powerline
+python from powerline.vim import setup as powerline_setup
+python powerline_setup()
+python del powerline_setup
 " }}}
 
 " Mappings {{{
