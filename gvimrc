@@ -1,5 +1,5 @@
 " Nick's K-Rad vimrc - MacVim version
-" Last Updated: Thu Jan  2 07:10:30 2014
+" Last Updated: Thu 02 Jan 2014 07:20:22 AM CST
 " Set various options {{{
 set nocompatible
 syntax on
@@ -58,7 +58,7 @@ endif
 " For Gnome (Linux) GUI, set the following options {{{
 if has("gui_gnome")
 	set guiheadroom=20
-	set guifont=Inconsolata
+	set guifont=Inconsolata\ for\ Powerline\ 14
     "set guioptions-=T
     if exists("+lines")
         set lines=30
