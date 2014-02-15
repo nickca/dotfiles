@@ -78,5 +78,5 @@ RPROMPT='%{$fg_bold[white]%}%m %t]-%{$fg_bold[grey]%}-.%{$reset_color%}'
 # set the console font, but only if this is a tty
 [[ ( `uname` == 'Linux' && `tty` =~ \/dev\/tty ) ]] && setfont sun12x22
 
-FORTUNE=`fortune -s | head -n1`
+FORTUNE=`fortune -s`
 echo $FORTUNE
