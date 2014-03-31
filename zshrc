@@ -35,6 +35,11 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 #plugins=(command-not-found screen)
+if [[ `uname` == 'Darwin' ]]; then
+    plugins=(osx git dirhistory brew nyan python web-search) 
+elif [[ `uname` == 'Linux' ]]; then
+    plugins=(debian command-not-found dirhistory nyan python web-search)
+fi
 
 source $ZSH/oh-my-zsh.sh
 
