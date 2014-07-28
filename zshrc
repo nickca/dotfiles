@@ -41,6 +41,9 @@ for dir in $pathdirs; do
     fi
 done
 
+# Aliases
+alias less='most'
+
 # Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
 HISTSIZE=1000
