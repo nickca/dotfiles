@@ -25,7 +25,7 @@ sample, if you will.
 
 Get and load antigen.
 
-    curl https://raw.github.com/zsh-users/antigen/master/antigen.zsh > antigen.zsh
+    curl -L https://raw.githubusercontent.com/zsh-users/antigen/master/antigen.zsh > antigen.zsh
     source antigen.zsh
 
 There. You now have all the antigen goodies. Let's try install some plugins. How
@@ -49,10 +49,11 @@ utilities as small scripts all the time. Antigen is compatible with all of them.
 The plugins and scripts don't need any special handling to be compatible with
 antigen.
 
-Another example, [kennethreitz's autoenv][autoenv] (or [my fork][f-autoenv] of
-it). Just a bundle command away.
+Another example, [kennethreitz's autoenv][autoenv] (or
+[the zsh optimized version][z-autoenv] of it). Just a bundle command away.
 
-    antigen bundle sharat87/autoenv
+    antigen bundle kennethreitz/autoenv
+    # or `antigen bundle Tarrasch/zsh-autoenv`
 
 And boom! you have all the autoenv goodness. Just remember how you used to do
 these before antigen, clone it, modify your zshrc to source it, load a new
@@ -177,7 +178,8 @@ where `<url>` is the repository url and it defaults to [robbyrussell's
 oh-my-zsh][oh-my-zsh] repo (can be changed by setting `ANTIGEN_DEFAULT_REPO_URL`
 discussed further down). `<loc>` is the path under this repository which has the
 zsh plugin. This is typically the directory that contains a `*.plugin.zsh` file,
-but it could contain a completion file or just many `*.zsh` files to be sourced.
+but it could contain a completion file or just many `*.zsh` files to be sourced,
+or it could simply be a file (with any extension) that you want to source.
 `<loc>` defaults to `/`, which indicates the repository itself is a plugin.
 
 An example invocation would be
@@ -595,16 +597,34 @@ Any comments/suggestions/feedback welcome. Please say hello to me
 ([@sharat87][twitter]) on twitter. Or open an issue to discuss something
 (anything!) about the project ;).
 
+### More plugins
+
+The [awesome-zsh-plugins][] list is a directory of plugins and themes that you may
+find useful.
+
+### Alternatives to antigen
+
+  * [antigen-hs][] - An antigen-inspired zsh plugin manager that tries to do work
+    statically and only on manual invocation, minimizing the zsh startup time.
+    Antigen-hs is much more minimalistic and emphasizes convention over
+    configuration more strongly than antigen.
+  * [zgen][] - Another antigen-inspired zsh plugin manager that sets up a static
+    load file for a fast startup. Has no external dependencies, as it's written
+    in pure zsh.
+
 
 [Vundle]: https://github.com/gmarik/vundle
 [page on themes]: https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
+[awesome-zsh-plugins]: https://github.com/unixorn/awesome-zsh-plugins
 [wild]: https://github.com/zsh-users/antigen/wiki/In-the-wild
 [syntax highlighting plugin]: https://github.com/zsh-users/zsh-syntax-highlighting
 [autoenv]: https://github.com/kennethreitz/autoenv
-[f-autoenv]: https://github.com/sharat87/autoenv
+[z-autoenv]: https://github.com/Tarrasch/zsh-autoenv
 [oh-my-zsh]: https://github.com/robbyrussell/oh-my-zsh
 [cram]: https://bitheap.org/cram/
 [issue]: https://github.com/zsh-users/antigen/issues
 [license]: http://mit.sharats.me
 [contributing]: https://github.com/zsh-users/antigen/wiki/Contributing
 [twitter]: http://twitter.com/sharat87
+[antigen-hs]: https://github.com/Tarrasch/antigen-hs
+[zgen]: https://github.com/tarjoilija/zgen
