@@ -1,4 +1,4 @@
-COMPLETION_WAITING_DOTS="true"
+#COMPLETION_WAITING_DOTS="true"
 
 source ~/dotfiles/antigen/antigen.zsh
 antigen use oh-my-zsh
@@ -8,14 +8,24 @@ antigen bundle dirhistory
 antigen bundle python
 antigen bundle git
 antigen bundle web-search
+antigen bundle common-aliases
 if [[ `uname` == 'Darwin' ]]; then
     antigen bundle osx
+    antigen bundle brew
     antigen theme apple
+    test -e ${HOME}/.iterm2_shell_integration.zsh && source ${HOME}/.iterm2_shell_integration.zsh
 elif [[ `uname` == 'Linux' ]]; then
     antigen bundle debian
     antigen bundle command-not-found
     antigen theme terminalparty
 fi
+
+# Setup zsh-autosuggestions
+source ~/.zsh/zsh-autosuggestions/autosuggestions.zsh
+zle-line-init() {
+    zle autosuggest-start
+}
+zle -N zle-line-init
 
 [[ -s "$HOME/.antigen/repos/https-COLON--SLASH--SLASH-github.com-SLASH-zsh-users-SLASH-zsh-completions.git" ]] && fpath=("$HOME/.antigen/repos/https-COLON--SLASH--SLASH-github.com-SLASH-zsh-users-SLASH-zsh-completions.git/src" $fpath)
 
@@ -62,5 +72,9 @@ RPROMPT='%{$fg_bold[white]%}%m %t]-%{$fg_bold[grey]%}-.%{$reset_color%}'
 # set the console font, but only if this is a tty
 [[ ( `uname` == 'Linux' && `tty` =~ \/dev\/tty ) ]] && setfont sun12x22
 
+# Key bindings
+bindkey '^T' autosuggest-execute-suggestion
+
 FORTUNE=`fortune -s`
 echo $FORTUNE
+
