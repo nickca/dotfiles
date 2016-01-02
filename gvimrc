@@ -1,5 +1,5 @@
 " Nick's K-Rad vimrc - MacVim version
-" Last Updated: Thu 02 Jan 2014 07:20:22 AM CST
+" Last Updated: Sat Jan  2 05:37:48 2016
 " Set various options {{{
 set nocompatible
 syntax on
@@ -25,15 +25,7 @@ set smarttab
 set smartindent
 set autoindent
 set expandtab
-"colo metacosm
-"this looks like spinnaker facemaker on the PC Jr :)
-colo sonoma
-" No autoinstall for GLVS, just download
-let g:GetLatestVimScripts_allowautoinstall=0
-" fix for LaTeX-suite
-let g:tex_flavor='latex'
-" disable eclim by default, uncomment to use eclipse
-let g:EclimDisabled=1
+colo solarized
 "}}}
 
 " For MacVim GUI, set the following options {{{
@@ -69,19 +61,19 @@ if has("gui_gnome")
 endif
 " }}}
 
-" Menus
-menu Arduino.Make :!ARDUINO_DIR="/usr/share/arduino" ARDMK_DIR="/usr" AVR_TOOLS_DIR="/usr" make<CR>
-menu Arduino.Make\ Clean :!ARDUINO_DIR="/usr/share/arduino" ARDMK_DIR="/usr" AVR_TOOLS_DIR="/usr" make clean<CR>
-menu Arduino.Upload :!ARDUINO_DIR="/usr/share/arduino" ARDMK_DIR="/usr" AVR_TOOLS_DIR="/usr" make upload<CR>
-menu Arduino.Compile\ &\ Upload :!ARDUINO_DIR="/usr/share/arduino" ARDMK_DIR="/usr" AVR_TOOLS_DIR="/usr" make && make upload<CR>
+" Menus and Toolbar {{{
+"menu Arduino.Make :!ARDUINO_DIR="/usr/share/arduino" ARDMK_DIR="/usr" AVR_TOOLS_DIR="/usr" make<CR>
+"menu Arduino.Make\ Clean :!ARDUINO_DIR="/usr/share/arduino" ARDMK_DIR="/usr" AVR_TOOLS_DIR="/usr" make clean<CR>
+"menu Arduino.Upload :!ARDUINO_DIR="/usr/share/arduino" ARDMK_DIR="/usr" AVR_TOOLS_DIR="/usr" make upload<CR>
+"menu Arduino.Compile\ &\ Upload :!ARDUINO_DIR="/usr/share/arduino" ARDMK_DIR="/usr" AVR_TOOLS_DIR="/usr" make && make upload<CR>
 
-amenu <silent> icon=/home/nickca/.vim/bitmaps/compile.png ToolBar.compile :!ARDUINO_DIR="/usr/share/arduino" ARDMK_DIR="/usr" AVR_TOOLS_DIR="/usr" make<CR>
-tmenu ToolBar.compile Arduino compile
-amenu <silent> icon=/home/nickca/.vim/bitmaps/upload.png ToolBar.upload :!ARDUINO_DIR="/usr/share/arduino" ARDMK_DIR="/usr" AVR_TOOLS_DIR="/usr" make upload<CR>
-tmenu ToolBar.upload Arduino upload
+"amenu <silent> icon=/home/nickca/.vim/bitmaps/compile.png ToolBar.compile :!ARDUINO_DIR="/usr/share/arduino" ARDMK_DIR="/usr" AVR_TOOLS_DIR="/usr" make<CR>
+"tmenu ToolBar.compile Arduino compile
+"amenu <silent> icon=/home/nickca/.vim/bitmaps/upload.png ToolBar.upload :!ARDUINO_DIR="/usr/share/arduino" ARDMK_DIR="/usr" AVR_TOOLS_DIR="/usr" make upload<CR>
+"tmenu ToolBar.upload Arduino upload
 
-menu XMonad.Recompile :!xmonad --recompile<CR>
-menu XMonad.Restart :!xmonad --restart<CR>
+"menu XMonad.Recompile :!xmonad --recompile<CR>
+"menu XMonad.Restart :!xmonad --restart<CR>
 
 " Toolbar
 " NERD Comment
@@ -101,6 +93,7 @@ tmenu ToolBar.nerdtree Open a nerdtree.
 "Restore Syntax
 amenu <silent> icon=/Users/nickca/.vim/bitmaps/syntaxon.png ToolBar.syntaxon :syntax on<CR>
 tmenu ToolBar.syntaxon Restore syntax color (after netrw save)
+"}}}
 
 " Custom status bar {{{
 set laststatus=2
@@ -131,8 +124,6 @@ nnoremap <SPACE> <C-F>
 " Autocommands {{{
 " Source .vimrc after saving
 "au BufWritePost ~/.vimrc so ~/.vimrc
-" Check if .bas files are BASCOM AVR
-au BufNewFile,BufRead *.bas	call s:FTBASCOM("basic")
 " If no omnifunc exists, load syntax completion
 au Filetype *
 	\ if &omnifunc == "" |
@@ -142,10 +133,10 @@ au Filetype *
 au BufWrite * ks|call DateRev()|'s
 
 " arduino
-autocmd! BufRead *.ino setlocal makeprg=ARDUINO_DIR=\"/usr/share/arduino\"\ ARDMK_DIR=\"/usr\"\ AVR_TOOLS_DIR=\"/usr\"\ make
-autocmd! BufRead *.pde setlocal makeprg=ARDUINO_DIR=\"/usr/share/arduino\"\ ARDMK_DIR=\"/usr\"\ AVR_TOOLS_DIR=\"/usr\"\ make
-autocmd BufNewFile,BufRead *.pde setlocal ft=arduino
-autocmd BufNewFile,BufRead *.ino setlocal ft=arduino
+"autocmd! BufRead *.ino setlocal makeprg=ARDUINO_DIR=\"/usr/share/arduino\"\ ARDMK_DIR=\"/usr\"\ AVR_TOOLS_DIR=\"/usr\"\ make
+"autocmd! BufRead *.pde setlocal makeprg=ARDUINO_DIR=\"/usr/share/arduino\"\ ARDMK_DIR=\"/usr\"\ AVR_TOOLS_DIR=\"/usr\"\ make
+"autocmd BufNewFile,BufRead *.pde setlocal ft=arduino
+"autocmd BufNewFile,BufRead *.ino setlocal ft=arduino
 
 
 " make directory of file the working dir
@@ -177,18 +168,6 @@ com! StartSC so ~/.scvimrc
 "}}}
 
 " Functions {{{
-" Check .bas files for BASCOM AVR {{{
-" Check the first 10 lines for 'BASCOM AVR', 'MCS', '$crystal' or '$regfile',
-" if not found it's a regular BASIC/VB file
-func! s:FTBASCOM(alt)
-	if getline(1).getline(2).getline(3).getline(4).getline(5).getline(6).getline(7).getline(8).getline(9).getline(10) =~? 'BASCOM AVR\|MCS\|\$crystal\|\$regfile'
-    set syntax=bascomavr
-  else
-    exe "setf " . a:alt
-  endif
-endfunc
-" }}}
-
 " Get and operate on visual selection, just an example {{{
 "func! GetVis()
 "python << EOF
@@ -208,21 +187,6 @@ endfunc
 " }}}
 
 " Function to reformat date on current line (by itself) using Python {{{
-"func! RFDate(fmt_o,fmt_n)
-"python << EOF
-"from datetime import datetime,date,time
-"orig_date = '%s' % vim.current.line
-"fmt_old = '%s' % vim.eval("a:fmt_o")
-"fmt_new = '%s' % vim.eval("a:fmt_n")
-"dt = datetime.strptime(orig_date,fmt_old)
-"vim.current.line = dt.strftime(fmt_new)
-"EOF
-"endfunc
-"com! -nargs=+ ReformatDate call RFDate(<f-args>)
-" }}}
-
-" Better version of above: reformat date in visual selection, replace from {{{
-" cursor to end of line with new date
 func! RFDate(fmt_o,fmt_n)
 python << EOF
 from datetime import datetime,date,time
@@ -375,11 +339,11 @@ com! -nargs=+ PyNewMethod call PyMeth(<f-args>)
 
 " Function to initiate Transmit sync via AppleScript (Mac Only!) {{{
 " Lots of applications for calling arbitrary AppleScript this way...
-func! TransmitSync()
-    let str = system("osascript" , "tell application \"Transmit\"\n\ttell document 1\n\t\ttell current session\n\t\t\tsynchronize direction upload files method mirror automatically determine time offset true\n\t\tend tell\n\tend tell\nend tell")
-    echo "osascript response: " . str
-endfunc
-com! FTPSync call TransmitSync()
+"func! TransmitSync()
+"    let str = system("osascript" , "tell application \"Transmit\"\n\ttell document 1\n\t\ttell current session\n\t\t\tsynchronize direction upload files method mirror automatically determine time offset true\n\t\tend tell\n\tend tell\nend tell")
+"    echo "osascript response: " . str
+"endfunc
+"com! FTPSync call TransmitSync()
 " }}}
 
 " show indent level {{{

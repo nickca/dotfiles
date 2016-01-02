@@ -65,19 +65,26 @@ RELATED WORKS								     *
 
 - IndentConsistencyCopAutoCmds (vimscript #1691) complements this plugin. It
   automatically triggers the IndentConsistencyCop for certain filetypes when
-  loading the buffer and optionally also on each write.
+  loading the buffer and optionally also on each write
 - Indent Finder (vimscript #513) is a Python script and Vim plugin that scans
-  any loaded buffer and configures the appropriate indent settings.
-- yaifa.vim (vimscript #3096) is a port to vimscript of the above.
+  any loaded buffer and configures the appropriate indent settings
+- yaifa.vim (vimscript #3096) is a port to vimscript of the above
 - detectindent.vim (https://github.com/ciaranm/detectindent) by Ciaran
-  McCreesh tries to auto-detect the indentation settings.
+  McCreesh tries to auto-detect the indentation settings
 - GuessIndent (vimscript #4251) is based on detectindent.vim
 - indentdetect.vim
   (https://github.com/ervandew/vimfiles/blob/master/vim/plugin/indentdetect.vim)
   by Eric Van Dewoestine performs a simple detection and can set defaults
-  based on the filespec.
+  based on the filespec
 - matchindent.vim (vimscript #4066) detects tabs, 2 and 4-space indents and
-  adapts the indent settings accordingly.
+  adapts the indent settings accordingly
+- sleuth.vim (vimscript #4375) by Tim Pope automatically adjusts 'shiftwidth'
+  and 'tabstop' heuristically (via a simplistic sampling that does not check
+  for bad or inconsistent indents) or by looking at other files of the same
+  type
+- filetype (vimscript #5065) highlights tabs when 'expandtab' is set, trailing
+  spaces, and lines longer than 'textwidth', but doesn't actually check
+  conformance to indent
 
 ==============================================================================
 USAGE						  *IndentConsistencyCop-usage*
@@ -112,6 +119,8 @@ To uninstall, use the |:RmVimball| command.
 DEPENDENCIES				   *IndentConsistencyCop-dependencies*
 
 - Requires Vim 7.0 or higher.
+- Requires the |ingo-library.vim| plugin (vimscript #4433), version 1.019 or
+  higher.
 
 ==============================================================================
 CONFIGURATION				  *IndentConsistencyCop-configuration*
@@ -157,7 +166,7 @@ and C/C++ programs: >
 The IndentConsistencyCop would be confused by these special indents, so the
 non-indent pattern defined in g:indentconsistencycop_non_indent_pattern
 removes these additional whitespaces from the indent when evaluating lines. >
-    let g:indentconsistencycop_non_indent_pattern = ' \*[*/ \t]'
+    let g:indentconsistencycop_non_indent_pattern = ' \*\%([*/ \t]\|$\)'
 <
 ==============================================================================
 INTEGRATION				    *IndentConsistencyCop-integration*
@@ -248,6 +257,31 @@ IDEAS						  *IndentConsistencyCop-ideas*
 
 ==============================================================================
 HISTORY						*IndentConsistencyCop-history*
+
+1.45	12-Dec-2014
+- Minor: Highlight action checks are dependent on 'iskeyword' setting, and
+  could cause script errors.
+- Add dependency to ingo-library (vimscript #4433). *** You need to separately
+  install ingo-library (vimscript #4433) version 1.019 (or higher)! ***
+
+1.44	11-Jan-2014
+- BUG: The version 1.43 workaround for the Vim 7.4 new regexp engine was
+  ineffective, because the \%#=1 atom needs to be prepended to the entire
+  regular expression, but that's not possible with the configuration value
+  alone. (Also, the workaround mistakenly specified auto-select (0) instead of
+  old engine (1).) Move the workaround to s:GetBeginningWhitespace() instead.
+- ENH: Close all consistent parts of the buffer when highlighting the
+  inconsistencies via folding, and restore the original 'foldlevel' setting
+  (and therefore the global fold state set by zM / zR) on
+  :IndentConsistencyCopOff. Thanks to Marcelo Montu for the idea.
+- ENH: Enable folding to highlight the inconsistencies when it was previously
+  :set nofoldenable'd.
+
+1.43	19-Dec-2013
+- Minor: Make matchstr() robust against 'ignorecase'.
+- Improve g:indentconsistencycop_non_indent_pattern to also handle empty
+  comment lines with a sole ' *' prefix. Thanks to Marcelo Montu for reporting
+  this.
 
 1.42	10-Dec-2012
 When a perfect or authoritative rating didn't pass the majority rule, try to
@@ -365,8 +399,8 @@ First published version.
 Started development.
 
 ==============================================================================
-Copyright: (C) 2006-2012 Ingo Karkat
-The VIM LICENSE applies to this script; see |copyright|.
+Copyright: (C) 2006-2014 Ingo Karkat
+The VIM LICENSE applies to this plugin; see |copyright|.
 
 Maintainer:	Ingo Karkat <ingo@karkat.de>
 ==============================================================================

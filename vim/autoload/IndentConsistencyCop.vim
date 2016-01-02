@@ -1,13 +1,38 @@
 " IndentConsistencyCop.vim: Is the buffer's indentation consistent and does it conform to tab settings?
 "
 " DEPENDENCIES:
+"   - ingo/plugin/setting.vim autoload script
+"   - ingo/query.vim autoload script
 "
-" Copyright: (C) 2006-2012 Ingo Karkat
+" Copyright: (C) 2006-2014 Ingo Karkat
 "   The VIM LICENSE applies to this script; see ':help copyright'.
 "
 " Maintainer:	Ingo Karkat <ingo@karkat.de>
 "
 " REVISION	DATE		REMARKS  {{{1
+"   1.45.014	12-Dec-2014	Minor: Highlight action checks are dependent on
+"				'iskeyword' setting, and could cause script
+"				errors.
+"   1.45.013	30-Apr-2014	Consume
+"				ingo#plugin#setting#BooleanToStringValue() from
+"				ingo-library.
+"				Factor out ingo#query#ConfirmAsText() to
+"				ingo-library.
+"   1.44.012	08-Jan-2014	Move workaround of forcing old regexp engine to
+"				s:GetBeginningWhitespace().
+"				ENH: Close all consistent parts of the buffer
+"				when highlighting the inconsistencies via
+"				folding, and restore the original 'foldlevel'
+"				setting (and therefore the global fold state
+"				set by zM / zR) on :IndentConsistencyCopOff.
+"				Thanks to Marcelo Montu for the idea.
+"				ENH: Enable folding to highlight the
+"				inconsistencies when it was previously :set
+"				nofoldenable'd.
+"				Minor: Made IndentConsistencyCopFoldExpr() an
+"				autoload function.
+"   1.43.011	14-Jun-2013	Minor: Make matchstr() robust against
+"				'ignorecase'.
 "   1.42.027	10-Dec-2012	When a perfect or authoritative rating didn't
 "				pass the majority rule (inside
 "				s:NormalizeRatings()), try to turn around the
@@ -350,8 +375,15 @@ function! s:CountBadMixOfSpacesAndTabs( string ) " {{{2
     call s:IncreaseKeyed( s:occurrences, 'badmix')
 endfunction
 
+if exists('+regexpengine') " {{{2
+    " XXX: The new NFA-based regexp engine has a problem with the default
+    " pattern; cp. http://article.gmane.org/gmane.editors.vim.devel/43712
+    let s:beginningWhitespacePrefix = '\%#=1'
+else
+    let s:beginningWhitespacePrefix = ''
+endif
 function! s:GetBeginningWhitespace( lineNum ) " {{{2
-    return matchstr( getline(a:lineNum), '^\s\{-}\ze\($\|\S\|' . g:indentconsistencycop_non_indent_pattern . '\)' )
+    return matchstr(getline(a:lineNum), s:beginningWhitespacePrefix . '^\s\{-}\ze\($\|\S\|' . g:indentconsistencycop_non_indent_pattern . '\)')
 endfunction
 
 function! s:UpdateIndentMinMax( beginningWhitespace ) " {{{2
@@ -1261,10 +1293,6 @@ function! s:GetCorrectExpandtabSetting( indentSetting ) " {{{2
     return (s:GetSettingFromIndentSetting( a:indentSetting ) == 'spc')
 endfunction
 
-function! s:BooleanToSettingNoSetting( settingName, settingValue )
-    return a:settingValue ? a:settingName : 'no' . a:settingName
-endfunction
-
 function! s:CheckConsistencyWithBufferSettings( indentSetting ) " {{{2
 "*******************************************************************************
 "* PURPOSE:
@@ -1302,7 +1330,7 @@ function! s:CheckConsistencyWithBufferSettings( indentSetting ) " {{{2
 	    let l:userString .= "\n- shiftwidth from " . &l:shiftwidth . ' to ' . s:GetCorrectShiftwidthSetting( a:indentSetting )
 	endif
 	if ! l:isExpandtabCorrect
-	    let l:userString .= "\n- " . s:BooleanToSettingNoSetting( 'expandtab', &l:expandtab ) . ' to ' . s:BooleanToSettingNoSetting( 'expandtab', s:GetCorrectExpandtabSetting( a:indentSetting ) )
+	    let l:userString .= "\n- " . ingo#plugin#setting#BooleanToStringValue('expandtab') . ' to ' . ingo#plugin#setting#BooleanToStringValue('expandtab', s:GetCorrectExpandtabSetting(a:indentSetting))
 	endif
 
 	let l:userString .= s:GetInsufficientIndentUserMessage()
@@ -1561,7 +1589,7 @@ function! s:UnindentedBufferConsistencyCop( isEntireBuffer, isBufferSettingsChec
 	if ! empty( l:userMessage )
 	    let l:userMessage = 'This ' . s:GetScopeUserString(a:isEntireBuffer) . ' does not contain indented text. ' . l:userMessage
 	    let l:userMessage .= "\nHow do you want to deal with the inconsistency?"
-	    let l:action = s:Query( l:userMessage, ['&Ignore', '&Correct setting...'], 1 )
+	    let l:action = ingo#query#ConfirmAsText(l:userMessage, ['&Ignore', '&Correct setting...'], 1, 'Question')
 	    if empty(l:action) || l:action ==? 'Ignore'
 		call s:PrintBufferSettings( 'The buffer settings remain inconsistent: ' )
 	    elseif l:action =~? '^Correct'
@@ -1632,7 +1660,7 @@ function! s:IndentBufferConsistencyCop( startLineNum, endLineNum, consistentInde
 	    let l:userMessage .= "\nHow do you want to deal with the "
 	    let l:userMessage .= (s:IsEnoughIndentForSolidAssessment() ? '' : 'potential ')
 	    let l:userMessage .= 'inconsistency?'
-	    let l:action = s:Query(l:userMessage, ['&Ignore', '&Change', '&Wrong, choose correct setting...'], 1)
+	    let l:action = ingo#query#ConfirmAsText(l:userMessage, ['&Ignore', '&Change', '&Wrong, choose correct setting...'], 1, 'Question')
 	    if empty(l:action) || l:action ==? 'Ignore'
 		call s:PrintBufferSettings( 'The buffer settings remain ' . (s:IsEnoughIndentForSolidAssessment() ? 'inconsistent' : 'at') . ': ' )
 	    elseif l:action ==? 'Change'
@@ -1686,10 +1714,7 @@ function! s:IsLineCorrect( lineNum, correctIndentSetting ) " {{{2
     endif
 endfunction
 
-function! IndentConsistencyCopFoldExpr( lineNum, foldContext ) " {{{2
-    " This function must be global; I could not get either s:FoldExpr() nor
-    " <SID>FoldExpr() resolved properly when setting 'foldexpr' to a
-    " script-local function.
+function! IndentConsistencyCop#FoldExpr( lineNum, foldContext ) " {{{2
     let l:lineCnt = a:lineNum - a:foldContext
     while l:lineCnt <= a:lineNum + a:foldContext
 	if index( b:indentconsistencycop_lineNumbers, l:lineCnt ) != -1
@@ -1790,19 +1815,34 @@ function! s:SetHighlighting( lineNumbers ) " {{{2
 	setlocal list
     endif
 
-    let l:foldContext = matchstr( g:indentconsistencycop_highlighting, 'f:\zs\d' )
+    let l:foldContext = matchstr( g:indentconsistencycop_highlighting, '\Cf:\zs\d' )
     if ! empty( l:foldContext )
 	" The list of lines to be highlighted is copied to a list with
 	" buffer-scope, because the (buffer-scoped) foldexpr needs access to it.
 	let b:indentconsistencycop_lineNumbers = copy( a:lineNumbers )
+
 	if ! exists( 'b:indentconsistencycop_save_foldexpr' )
 	    let b:indentconsistencycop_save_foldexpr = &l:foldexpr
 	endif
-	let &l:foldexpr='IndentConsistencyCopFoldExpr(v:lnum,' . l:foldContext . ')'
+	let &l:foldexpr='IndentConsistencyCop#FoldExpr(v:lnum,' . l:foldContext . ')'
+
+	" Close all folds, so that only the inconsistent lines (plus context
+	" around it) is visible.
+	if ! exists( 'b:indentconsistencycop_save_foldlevel' )
+	    let b:indentconsistencycop_save_foldlevel = &l:foldlevel
+	endif
+	setlocal foldlevel=0
+
 	if ! exists( 'b:indentconsistencycop_save_foldmethod' )
 	    let b:indentconsistencycop_save_foldmethod = &l:foldmethod
 	endif
 	setlocal foldmethod=expr
+
+	" Enable folding to be effective.
+	if ! &l:foldenable && ! exists( 'b:indentconsistencycop_save_foldenable' )
+	    let b:indentconsistencycop_save_foldenable = &l:foldenable
+	endif
+	setlocal foldenable
     endif
 endfunction
 
@@ -1841,18 +1881,30 @@ function! IndentConsistencyCop#ClearHighlighting() " {{{2
 	endif
     endif
 
-    if ! empty( matchstr( g:indentconsistencycop_highlighting, 'f:\zs\d' ) )
-	if exists( 'b:indentconsistencycop_lineNumbers' )
-	    " Just free the memory here.
-	    unlet b:indentconsistencycop_lineNumbers
+    if ! empty( matchstr( g:indentconsistencycop_highlighting, '\Cf:\zs\d' ) )
+	if exists( 'b:indentconsistencycop_save_foldenable' )
+	    let &l:foldenable = b:indentconsistencycop_save_foldenable
+	    unlet b:indentconsistencycop_save_foldenable
 	endif
+
 	if exists( 'b:indentconsistencycop_save_foldmethod' )
 	    let &l:foldmethod = b:indentconsistencycop_save_foldmethod
 	    unlet b:indentconsistencycop_save_foldmethod
 	endif
+
+	if exists( 'b:indentconsistencycop_save_foldlevel' )
+	    let &l:foldlevel = b:indentconsistencycop_save_foldlevel
+	    unlet b:indentconsistencycop_save_foldlevel
+	endif
+
 	if exists( 'b:indentconsistencycop_save_foldexpr' )
 	    let &l:foldexpr = b:indentconsistencycop_save_foldexpr
 	    unlet b:indentconsistencycop_save_foldexpr
+	endif
+
+	if exists( 'b:indentconsistencycop_lineNumbers' )
+	    " Just free the memory here.
+	    unlet b:indentconsistencycop_lineNumbers
 	endif
     endif
 endfunction
@@ -1925,11 +1977,11 @@ function! s:QueryIndentSetting() " {{{2
 "* RETURN VALUES:
 "   Queried indent setting (e.g. 'spc4'), or empty string if user has canceled.
 "*******************************************************************************
-    let l:setting = s:Query('Choose the indent setting:', ['&tabstop', '&soft tabstop', 'spa&ces'], 0)
+    let l:setting = ingo#query#ConfirmAsText('Choose the indent setting:', ['&tabstop', '&soft tabstop', 'spa&ces'], 0, 'Question')
     if empty(l:setting)
 	return ''
     elseif l:setting !=? 'tabstop'
-	let l:indentValue = s:Query('Choose indent value:', ['&1', '&2', '&3', '&4', '&5', '&6', '&7', '&8'], 0 )
+	let l:indentValue = ingo#query#ConfirmAsText('Choose indent value:', ['&1', '&2', '&3', '&4', '&5', '&6', '&7', '&8'], 0, 'Question')
 	if empty(l:indentValue)
 	    return ''
 	endif
@@ -2066,7 +2118,7 @@ function! s:IndentBufferInconsistencyCop( startLineNum, endLineNum, inconsistent
 "* RETURN VALUES:
 "   none
 "*******************************************************************************
-    let l:action = s:Query(a:inconsistentIndentationMessage, ['&Ignore', '&Highlight wrong indents...'], 1)
+    let l:action = ingo#query#ConfirmAsText(a:inconsistentIndentationMessage, ['&Ignore', '&Highlight wrong indents...'], 1, 'Question')
     let b:indentconsistencycop_result.isIgnore = (l:action ==# 'Ignore')
     if empty(l:action) || l:action ==# 'Ignore'
 	" User chose to ignore the inconsistencies.
@@ -2098,15 +2150,15 @@ function! s:IndentBufferInconsistencyCop( startLineNum, endLineNum, inconsistent
 	    call add(l:highlightChoices, '&Illegal indents only')
 	endif
 
-	let l:highlightAction = s:Query(l:highlightMessage, l:highlightChoices, 1)
+	let l:highlightAction = ingo#query#ConfirmAsText(l:highlightMessage, l:highlightChoices, 1, 'Question')
 	if empty(l:highlightAction)
 	    " User canceled.
 	    call s:EchoUserMessage('Be careful when modifying the inconsistent indents! ')
-	elseif l:highlightAction =~? '\<buffer settings\>'
+	elseif l:highlightAction =~? 'buffer settings'
 	    call s:HighlightInconsistentIndents( a:startLineNum, a:endLineNum, l:bufferIndentSetting )
-	elseif l:highlightAction =~? '\<best guess\>'
+	elseif l:highlightAction =~? 'best guess'
 	    call s:HighlightInconsistentIndents( a:startLineNum, a:endLineNum, l:bestGuessIndentSetting )
-	elseif l:highlightAction =~? '\<chosen setting\>'
+	elseif l:highlightAction =~? 'chosen setting'
 	    let l:chosenIndentSetting = s:QueryIndentSetting()
 	    if ! empty( l:chosenIndentSetting )
 		call s:HighlightInconsistentIndents( a:startLineNum, a:endLineNum, l:chosenIndentSetting )
