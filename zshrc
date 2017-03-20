@@ -2,13 +2,15 @@
 
 source ~/dotfiles/antigen/antigen.zsh
 antigen use oh-my-zsh
-antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-completions
+antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle dirhistory
 antigen bundle python
 antigen bundle git
 antigen bundle web-search
 antigen bundle common-aliases
+source ~/dotfiles/zsh/zaw/zaw.zsh
+
 if [[ `uname` == 'Darwin' ]]; then
     antigen bundle osx
     antigen bundle brew
