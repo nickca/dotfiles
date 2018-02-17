@@ -1,42 +1,128 @@
-#COMPLETION_WAITING_DOTS="true"
+# Nick's multiplatform (OSX/Linux) zshrc
+# Last Updated: Tue Jan  9 13:47:53 2018
 
-source ~/dotfiles/antigen/antigen.zsh
-antigen use oh-my-zsh
-antigen bundle zsh-users/zsh-completions
-antigen bundle zsh-users/zsh-syntax-highlighting
-antigen bundle dirhistory
-antigen bundle python
-antigen bundle git
-antigen bundle web-search
-antigen bundle common-aliases
-source ~/dotfiles/zsh/zaw/zaw.zsh
-
-if [[ `uname` == 'Darwin' ]]; then
-    antigen bundle osx
-    antigen bundle brew
-    antigen theme apple
-    test -e ${HOME}/.iterm2_shell_integration.zsh && source ${HOME}/.iterm2_shell_integration.zsh
-elif [[ `uname` == 'Linux' ]]; then
-    antigen bundle debian
-    antigen bundle command-not-found
-    antigen theme terminalparty
+# Force 256 colors unless Linux console
+if [[ $TERM != "linux" ]]; then
+    export TERM="xterm-256color"
 fi
 
-# Setup zsh-autosuggestions
-source ~/.zsh/zsh-autosuggestions/autosuggestions.zsh
-zle-line-init() {
-    zle autosuggest-start
-}
-zle -N zle-line-init
+# Antigen {{{
+# Only use Antigen on login shells
+if [[ -o login ]]; then
+    USE_ANTIGEN=1
+else
+    USE_ANTIGEN=0
+fi
 
-[[ -s "$HOME/.antigen/repos/https-COLON--SLASH--SLASH-github.com-SLASH-zsh-users-SLASH-zsh-completions.git" ]] && fpath=("$HOME/.antigen/repos/https-COLON--SLASH--SLASH-github.com-SLASH-zsh-users-SLASH-zsh-completions.git/src" $fpath)
+if [[ $USE_ANTIGEN=1 ]]; then
+    ANTIGEN_MUTEX=false
+    if [[ -d /usr/local/share/antigen ]]; then
+        source /usr/local/share/antigen/antigen.zsh
+    elif [[ -d /usr/share/antigen ]]; then
+        source /usr/share/antigen/antigen.zsh
+    fi
+    antigen use oh-my-zsh
+    antigen bundle zsh-users/zsh-completions
+    antigen bundle zsh-users/zsh-syntax-highlighting
+    antigen bundle dirhistory
+    antigen bundle python
+    antigen bundle git
+    antigen bundle web-search
+    antigen bundle common-aliases
+    antigen bundle vi-mode
+    # Powerline switch
+    USE_POWERLINE=1
+    # Powerline config {{{2
+    if [[ $USE_POWERLINE == 1 ]]; then
+        DEFAULT_FOREGROUND=006
+        DEFAULT_BACKGROUND=235
+        DEFAULT_COLOR=$DEFAULT_FOREGROUND
 
-# Customize to your needs...
-#export PATH=/home/nickca/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
-#export PATH=$PATH:/usr/local/share/SIMH/bin
-# Set the PATH intelligently.
+        POWERLEVEL9K_OS_ICON_FOREGROUND="$DEFAULT_FOREGROUND"
+        POWERLEVEL9K_OS_ICON_BACKGROUND="$DEFAULT_BACKGROUND"
+        POWERLEVEL9K_CONTEXT_DEFAULT_FOREGROUND="$DEFAULT_FOREGROUND"
+        POWERLEVEL9K_CONTEXT_DEFAULT_BACKGROUND="$DEFAULT_BACKGROUND"
+        POWERLEVEL9K_DIR_HOME_BACKGROUND="$DEFAULT_FOREGROUND"
+        POWERLEVEL9K_DIR_HOME_FOREGROUND="$DEFAULT_BACKGROUND"
+        POWERLEVEL9K_DIR_HOME_SUBFOLDER_BACKGROUND="$DEFAULT_FOREGROUND"
+        POWERLEVEL9K_DIR_HOME_SUBFOLDER_FOREGROUND="$DEFAULT_BACKGROUND"
+        POWERLEVEL9K_DIR_DEFAULT_BACKGROUND="$DEFAULT_FOREGROUND"
+        POWERLEVEL9K_DIR_DEFAULT_FOREGROUND="$DEFAULT_BACKGROUND"
+        POWERLEVEL9K_DIR_WRITABLE_FORBIDDEN_BACKGROUND="magenta"
+        POWERLEVEL9K_DIR_WRITABLE_FORBIDDEN_FOREGROUND="$DEFAULT_BACKGROUND"
+        POWERLEVEL9K_VCS_CLEAN_BACKGROUND="green"
+        POWERLEVEL9K_VCS_CLEAN_FOREGROUND="$DEFAULT_BACKGROUND"
+        POWERLEVEL9K_VCS_MODIFIED_BACKGROUND="yellow"
+        POWERLEVEL9K_VCS_MODIFIED_FOREGROUND="$DEFAULT_BACKGROUND"
+        POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND="magenta"
+        POWERLEVEL9K_VCS_UNTRACKED_FOREGROUND="$DEFAULT_BACKGROUND"
+
+        POWERLEVEL9K_STATUS_OK_FOREGROUND="$DEFAULT_FOREGROUND"
+        POWERLEVEL9K_STATUS_OK_BACKGROUND="$DEFAULT_BACKGROUND"
+        POWERLEVEL9K_VI_MODE_INSERT_FOREGROUND="$DEFAULT_FOREGROUND"
+        POWERLEVEL9K_VI_MODE_INSERT_BACKGROUND="$DEFAULT_BACKGROUND"
+        POWERLEVEL9K_VI_MODE_NORMAL_FOREGROUND="$DEFAULT_BACKGROUND"
+        POWERLEVEL9K_VI_MODE_NORMAL_BACKGROUND="$DEFAULT_FOREGROUND"
+        POWERLEVEL9K_TIME_FOREGROUND="$DEFAULT_FOREGROUND"
+        POWERLEVEL9K_TIME_BACKGROUND="white"
+
+        POWERLEVEL9K_MODE="nerdfont-complete"
+        POWERLEVEL9K_SHORTEN_DIR_LENGTH=3
+        POWERLEVEL9K_SHORTEN_STRATEGY="truncate_middle"
+        POWERLEVEL9K_ALWAYS_SHOW_CONTEXT=true
+        POWERLEVEL9K_ALWAYS_SHOW_USER=false
+        POWERLEVEL9K_PROMPT_ON_NEWLINE=true
+        POWERLEVEL9K_RPROMPT_ON_NEWLINE=false
+        POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX="╭"
+        POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX="╰─\uF155 "
+        #POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(os_icon context dir vcs)
+        POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(os_icon dir vcs)
+        POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status vi_mode time)
+        POWERLEVEL9K_CONTEXT_TEMPLATE="\uf2bd %n \uf109 %m"
+        POWERLEVEL9K_VI_INSERT_MODE_STRING="%F{green}\ue62b: %F{$DEFAULT_FOREGROUND}\uf044"
+        POWERLEVEL9K_VI_COMMAND_MODE_STRING="%F{green}\ue62b: %F{$DEFAULT_BACKGROUND}\uf085"
+        POWERLEVEL9K_TIME_FORMAT="%D{\uf017 %I:%M%p}"
+    fi
+    #}}}2
+    
+    # Host specific config {{{2
+    if [[ `uname` == 'Darwin' ]]; then
+        antigen bundle osx
+        antigen bundle brew
+        if [[ $USE_POWERLINE == 1 ]]; then
+            POWERLEVEL9K_INSTALLATION_PATH=$ANTIGEN_BUNDLES/bhilburn/powerlevel9k
+            antigen theme bhilburn/powerlevel9k powerlevel9k
+        else
+            antigen theme apple
+            RPROMPT='%{$fg_bold[white]%}%m %t]-%{$fg_bold[grey]%}-.%{$reset_color%}'
+        fi
+        test -e ${HOME}/.iterm2_shell_integration.zsh && source ${HOME}/.iterm2_shell_integration.zsh
+    elif [[ `uname` == 'Linux' ]]; then
+        antigen bundle debian
+        antigen bundle command-not-found
+        if [[ $USE_POWERLINE == 1 ]]; then
+            POWERLEVEL9K_INSTALLATION_PATH=$ANTIGEN_BUNDLES/bhilburn/powerlevel9k
+            antigen theme bhilburn/powerlevel9k powerlevel9k
+        else
+            antigen theme terminalparty
+            RPROMPT='%{$fg_bold[white]%}%m %t]-%{$fg_bold[grey]%}-.%{$reset_color%}'
+        fi
+    fi
+    #}}}2
+fi
+#}}}
+
+# Autosuggest
+if [[ -d /usr/local/share/zsh-autosuggestions ]]; then
+    source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+elif [[ -d /usr/share/zsh-autosuggestions ]]; then
+    source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+
+# Set the PATH intelligently. {{{
 pathdirs=(
     ~/bin
+    ~/.iterm2
     /usr/local/bin
     /usr/texbin
     /usr/X11/bin
@@ -46,37 +132,60 @@ pathdirs=(
     /usr/local/sbin
     /usr/games
     /usr/local/share/SIMH/bin
+    /usr/local/opt/python/libexec/bin
 )
 for dir in $pathdirs; do
     if [ -d $dir ]; then
-        PATH="$PATH:$dir"
+        PATH="$dir:$PATH"
     fi
 done
+#}}}
 
 # Aliases
 alias less='most'
 
-# Lines configured by zsh-newuser-install
 HISTFILE=~/.histfile
 HISTSIZE=1000
 SAVEHIST=1000
 setopt autocd beep extendedglob notify
 bindkey -v
-# End of lines configured by zsh-newuser-install
-#
-# for Android:
-export USE_CCACHE=1
+export KEYTIMEOUT=1
 
-#RPROMPT='%{$fg_bold[white]%}$FORTUNE]-%{$fg_bold[grey]%}-.%{$reset_color%}'
-RPROMPT='%{$fg_bold[white]%}%m %t]-%{$fg_bold[grey]%}-.%{$reset_color%}'
+# Functions {{{
+# Mac only: open argument in new iTerm tab {{{2
+if [[ `uname` == 'Darwin' ]]; then
+tab () {
+    local cmd=""
+    local cdto="$PWD"
+    local args="$@"
+
+    if [[ ${#@} > 1 && -d "$1" ]]; then
+        cdto=`cd "$1"; pwd`
+        args="${@:2}"
+    elif [[ ${#@} > 1 ]]; then
+        args="${@:2}"
+    fi
+
+    if [[ -n "$args" ]]; then
+        cmd="; $args"
+    fi
+    local exec="cd $cdto$cmd"
+
+    osascript &>/dev/null <<EOF
+        tell application "iTerm"
+            tell current window
+                create tab with default profile 
+            end tell
+            tell current session of current window
+                write text "$exec"
+            end tell
+        end tell
+EOF
+}
+fi
+#}}}2
+#}}}
 
 # On Linux hosts only
 # set the console font, but only if this is a tty
 [[ ( `uname` == 'Linux' && `tty` =~ \/dev\/tty ) ]] && setfont sun12x22
-
-# Key bindings
-bindkey '^T' autosuggest-execute-suggestion
-
-FORTUNE=`fortune -s`
-echo $FORTUNE
-

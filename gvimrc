@@ -1,5 +1,5 @@
 " Nick's K-Rad vimrc - MacVim version
-" Last Updated: Sat Jan  2 05:37:48 2016
+" Last Updated: Sun Dec 31 08:01:16 2017
 " Set various options {{{
 set nocompatible
 syntax on
@@ -32,7 +32,7 @@ colo solarized
 if has("gui_macvim")
 	set guiheadroom=20
 	set guifont=Inconsolata\ for\ Powerline:h18
-    "set guioptions-=T
+    set guioptions+=T
     if exists("+lines")
         set lines=30
     endif
