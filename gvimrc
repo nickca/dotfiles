@@ -1,5 +1,5 @@
 " Nick's K-Rad vimrc - MacVim version
-" Last Updated: Sun Dec 31 08:01:16 2017
+" Last Updated: Fri Feb 16 21:05:46 2018
 " Set various options {{{
 set nocompatible
 syntax on
@@ -162,9 +162,7 @@ EOF
 " Command mappings {{{
 " Insert a 'Lorem ipsum' on the current line
 com! Lorem py vim.current.line = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-com! VimEnvBackup !tar chvzf ~/NicksVimEnvironment.tar.gz .vimrc .gvimrc .vimrc_less .vimrc_minimal .vim/
-com! VimEnvRestor !cd ~;tar xvzf NicksVimEnvironment.tar.gz
-com! StartSC so ~/.scvimrc
+com! UpdatePlugins !~/.vim/update_plugins.sh
 "}}}
 
 " Functions {{{
