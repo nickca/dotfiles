@@ -23,11 +23,15 @@ OPTIONS=symset:DECgraphics
 OPTIONS=time
 
 # Status hilites
-#OPTIONS=statushilites
-#OPTIONS=hilite_status:hitpoints/66%/yellow/normal
-#OPTIONS=hilite_status:hitpoints/50%/orange/normal
-#OPTIONS=hilite_status:hitpoints/33%/red/normal
-#OPTIONS=hilite_status:hunger/updown/red/green
+OPTIONS=statushilites:10
+OPTIONS=hilite_status:experience-level/changed/white/cyan
+OPTIONS=hilite_status:hitpoints/100%/brightgreen
+OPTIONS=hilite_status:hitpoints/<100%/green
+OPTIONS=hilite_status:hitpoints/<60%/yellow
+OPTIONS=hilite_status:hitpoints/<40%/red
+OPTIONS=hilite_status:carrying-capacity/burdened/yellow/stressed/orange
+OPTIONS=hilite_status:hunger/0/yellow/2/yellow/3/orange/4/red/5/red
+OPTIONS=hilite_status:gold/always/yellow
 
 # Menu colors
 OPTIONS=menucolors
