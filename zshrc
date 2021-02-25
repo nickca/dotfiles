@@ -18,8 +18,8 @@ if [[ $USE_ANTIGEN=1 ]]; then
     ANTIGEN_MUTEX=false
     if [[ -d /usr/local/share/antigen ]]; then
         source /usr/local/share/antigen/antigen.zsh
-    elif [[ -d /usr/share/antigen ]]; then
-        source /usr/share/antigen/antigen.zsh
+    elif [[ -d /usr/share/zsh-antigen ]]; then
+        source /usr/share/zsh-antigen/antigen.zsh
     fi
     antigen use oh-my-zsh
     antigen bundle zsh-users/zsh-completions
@@ -143,6 +143,8 @@ done
 
 # Aliases
 alias less='most'
+alias lynx='lynx -cfg=./.lynx.cfg -lss=./.lynx.lss'
+alias speedtest='curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python'
 
 HISTFILE=~/.histfile
 HISTSIZE=1000
@@ -188,4 +190,4 @@ fi
 
 # On Linux hosts only
 # set the console font, but only if this is a tty
-[[ ( `uname` == 'Linux' && `tty` =~ \/dev\/tty ) ]] && setfont sun12x22
+#[[ ( `uname` == 'Linux' && `tty` =~ \/dev\/tty ) ]] && setfont sun12x22
