@@ -1,5 +1,14 @@
 # Nick's multiplatform (OSX/Linux) zshrc
 # Last Updated: Tue Jan  9 13:47:53 2018
+# In order to install everything run the following:
+# Mac:
+# $ brew install zsh zsh-autosuggestions zsh-syntax-highlighting antigen
+# Linux:
+# $ sudo apt install zsh zsh-autosuggestions zsh-syntax-highlighting zsh-antigen
+# On recent Ubuntu the antigen package is broken, so install it and then run:
+# $ sudo curl -o /usr/share/zsh-antigen/antigen.zsh -sL git.io/antigen
+# The Powerline support will require a compatible font which can be installed from:
+# https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/SourceCodePro/Regular/complete
 
 # Force 256 colors unless Linux console
 if [[ $TERM != "linux" ]]; then
@@ -117,6 +126,12 @@ if [[ -d /usr/local/share/zsh-autosuggestions ]]; then
     source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 elif [[ -d /usr/share/zsh-autosuggestions ]]; then
     source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+# Syntax highlighting
+if [[ -d /usr/local/share/zsh-syntax-highlighting ]]; then
+    source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+elif [[ -d /usr/share/zsh-syntax-highlighting ]]; then
+    source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
 # Set the PATH intelligently. {{{
