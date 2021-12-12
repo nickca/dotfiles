@@ -1,0 +1,3 @@
+ePapirus icon theme needs to be installed to ~/.local/share/icons once downloaded from https://github.com/PapirusDevelopmentTeam/papirus-icon-theme
+i3stuff/bin are all linked to ~/.config/i3/bin/*
+i3stuff/rofi/config.rasi linked to ~/.config/rofi/config.rasi

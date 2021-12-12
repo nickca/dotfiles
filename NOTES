@@ -1,0 +1,17 @@
+Because I always forget how to get this to work:
+
+To download the latest when it doesn't exist, from the home directory:
+git clone https://github.com/nickca/dotfiles
+
+To commit changes:
+git commit -a -m "Message goes here"
+git push origin master
+
+To sync changes:
+git pull
+
+To add a new file after creating it:
+git add filename
+
+Notes about installing the required zsh stuff are in zshrc
+Notes about installing powerline for VIM are in gvimrc
