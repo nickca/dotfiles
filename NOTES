@@ -13,6 +13,10 @@ Have I mentioned that I fucking hate GIT? Seriously, there is no need to make it
 To commit changes:
 git commit -a -m "Message goes here"
 git push origin master
+If THAT doesn't work try
+git push -u origin HEAD:master
+
+Have I mentioned that GIT fucking sucks a dick? Why do I even use it?
 
 To sync changes:
 git pull
