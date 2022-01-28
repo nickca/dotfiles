@@ -3,9 +3,20 @@ Because I always forget how to get this to work:
 To download the latest when it doesn't exist, from the home directory:
 git clone https://github.com/nickca/dotfiles
 
+Then make sure my commonly used SSH identity is installed
+
+Then run this:
+git remote set-url origin git@github.com:nickca/dotfiles.git
+
+Have I mentioned that I fucking hate GIT? Seriously, there is no need to make it this fucking obtuse.
+
 To commit changes:
 git commit -a -m "Message goes here"
 git push origin master
+If THAT doesn't work try
+git push -u origin HEAD:master
+
+Have I mentioned that GIT fucking sucks a dick? Why do I even use it?
 
 To sync changes:
 git pull
