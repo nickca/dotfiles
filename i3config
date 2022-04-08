@@ -228,12 +228,13 @@ set $m2 #FFF0E0
 
 # Startup programs
 exec --no-startup-id dunst 
-exec_always compton &;
+#exec_always compton &;
 exec --no-startup-id clipit &; 
 #exec_always feh --bg-scale /home/nickca/penelope_wallapaper.png
 exec_always --no-startup-id nm-applet
 # nickca - xscreensaver daemon
 exec xscreensaver
+exec compton
 
 
 # Bind App to workspace
