@@ -232,8 +232,6 @@ exec_always compton &;
 exec --no-startup-id clipit &; 
 #exec_always feh --bg-scale /home/nickca/penelope_wallapaper.png
 exec_always --no-startup-id nm-applet
-# nickca - compositing WM
-exec compton
 # nickca - xscreensaver daemon
 exec xscreensaver
 

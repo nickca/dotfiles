@@ -8,6 +8,11 @@ command=df -h / | awk '/\//{ printf(" 💾 %4s/%s \n", $4, $2) }'
 interval=2
 color=#C9E3DB
 
+[DISK2]
+command=df -h /media-pool | awk '/\//{ printf(" %4s/%s \n", $4, $2) }'
+interval=2
+color=#C9E3DB 
+
 [CPU]
 full_text= CPU:  0.00% @ +00.0°C 
 command=~/.config/i3blocks/cpu/cpu_info.sh
