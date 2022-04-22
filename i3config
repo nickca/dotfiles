@@ -1,6 +1,13 @@
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 #
 
+#i3wm-gaps: remove title bars
+default_border pixel 1
+default_floating_border pixel 1
+#i3wm-gaps: configure gaps
+gaps inner 10
+gaps outer 10
+
 set_from_resource $darkred     color1  #000000
 set_from_resource $red         color9  #000000
 set_from_resource $darkgreen   color2  #000000
