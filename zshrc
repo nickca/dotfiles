@@ -165,6 +165,7 @@ done
 alias less='most'
 alias lynx='lynx -cfg=~/.lynx.cfg -lss=~/.lynx.lss'
 alias speedtest='curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python'
+alias cp='rsync -ah --progress'
 
 if [ -x "$(command -v exa)" ]; then
     alias ls="exa"
