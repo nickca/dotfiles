@@ -11,16 +11,26 @@ fish_vi_key_bindings
 set --global ayu_variant dark && ayu_load_theme 1>/dev/null
 # tide prompt: https://github.com/IlanCosman/tide
 # modifies "rainbow" theme
-set --global tide_character_bg_color normal
-set --global tide_character_color $_tide_color_green
+#set --global tide_character_bg_color normal
+#set --global tide_character_color $_tide_color_green
+set --global tide_character_color FFFFFF
 set --global tide_character_color_failure FF0000
-set --global tide_character_icon '\uF155'
-set --global tide_character_vi_icon_default '\ue62b'
-set --global tide_character_vi_icon_replace '\ue62b'
-set --global tide_character_vi_icon_visual '\ue62b'
+#set --global tide_character_icon '\uF155'
+set --global tide_character_icon ''
+#set --global tide_character_vi_icon_default '\ue62b'
+#set --global tide_character_vi_icon_replace '\ue62b'
+#set --global tide_character_vi_icon_visual '\ue62b'
+set --global tide_character_vi_icon_default ''
+set --global tide_character_vi_icon_replace ''
+set --global tide_character_vi_icon_visual ''
 set --global tide_right_prompt_items status cmd_duration vi_mode time jobs node virtual_env rustc php chruby go
 set --global tide_left_prompt_items os pwd git newline character
-set --global tide_time_format '%I:%M %p \uf017'
+#set --global tide_time_format '%I:%M %p \uf017'
+set --global tide_time_format '%I:%M %p '
+set --global tide_os_color eb3489
+set --global tide_os_bg_color 08294d
+set --global tide_cmd_duration_bg_color 90b6de
+
 # aliases
 alias ls="exa"
 alias la="exa --long --all --group --git"
