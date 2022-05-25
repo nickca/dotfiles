@@ -27,8 +27,9 @@ set --global tide_right_prompt_items status cmd_duration vi_mode time jobs node 
 set --global tide_left_prompt_items os pwd git newline character
 #set --global tide_time_format '%I:%M %p \uf017'
 set --global tide_time_format '%I:%M %p '
-set --global tide_os_color eb3489
-set --global tide_os_bg_color 08294d
+#set --global tide_os_color eb3489
+set --global tide_os_color 111111
+set --global tide_os_bg_color 90b6de
 set --global tide_cmd_duration_bg_color 90b6de
 set --global tide_git_bg_color 51e33d
 set --global tide_git_bg_color_unstable ffff03
