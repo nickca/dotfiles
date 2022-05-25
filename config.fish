@@ -31,9 +31,13 @@ set --global tide_time_format '%I:%M %p '
 set --global tide_os_color 111111
 set --global tide_os_bg_color 90b6de
 set --global tide_cmd_duration_bg_color 90b6de
+
 set --global tide_git_bg_color 51e33d
 set --global tide_git_bg_color_unstable ffff03
 set --global tide_git_bg_color_urgent ff0342
+
+set --global tide_left_prompt_separator_diff_color ''
+set --global tide_left_prompt_separator_same_color ''
 
 # aliases
 alias ls="exa"
