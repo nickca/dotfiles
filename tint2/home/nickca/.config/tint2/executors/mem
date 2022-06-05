@@ -1,0 +1,5 @@
+#!/bin/bash
+
+  mem=`free -b | awk '/Mem/ {printf "%.1f/%.1fGB\n", $3 / 1073741824, $2 / 1073741824 }'`
+  echo /usr/share/icons/Papirus/64x64/devices/gnome-dev-memory.svg
+  echo "$mem"

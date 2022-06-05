@@ -41,7 +41,7 @@ set --global tide_left_prompt_separator_same_color ''
 
 # aliases
 alias ls="exa"
-alias la="exa --long --all --group --git"
+alias la="exa -la --color-scale --group --icons"
 alias less="most"
 alias speedtest="curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python"
 alias cp="rsync -ah --progress"

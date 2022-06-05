@@ -6,15 +6,23 @@
 " On macOS:
 " $ brew install python
 " $ pip install --user powerline-status
+" Install plugins: https://github.com/junegunn/vim-plug {{{
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+autocmd VimEnter * PlugUpdate
+" }}}
 " PLUGINS {{{
 call plug#begin()
 Plug 'preservim/NERDTree'
 Plug 'preservim/nerdcommenter'
 Plug 'ervandew/supertab'
 Plug 'vim-scripts/EasyAccents'
-Plug 'inkarkat/vim-ingo-library'
-Plug 'inkarkat/vim-IndentConsistencyCop'
-Plug 'inkarkat/vim-IndentConsistencyCopAutoCmds'
+"Plug 'inkarkat/vim-ingo-library'
+"Plug 'inkarkat/vim-IndentConsistencyCop'
+"Plug 'inkarkat/vim-IndentConsistencyCopAutoCmds'
 Plug 'vim-scripts/Yow'
 call plug#end()
 " }}}
@@ -77,6 +85,16 @@ if has("gui_gnome")
     if exists("+columns")
         set columns=108
     endif
+endif
+" }}}
+" For any other GUI {{{
+set guiheadroom=20
+set guifont=Inconsolata\ for\ Powerline\ 16
+if exists("+lines")
+    set lines=30
+endif
+if exists("+columns")
+    set columns=108
 endif
 " }}}
 

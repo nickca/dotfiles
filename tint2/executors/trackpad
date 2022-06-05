@@ -1,0 +1,18 @@
+#!/bin/bash
+
+iconpath="/usr/share/icons/Papirus-Dark/24x24/panel/"
+#iconpath="$HOME/.config/tint2/executors/icons/battery/"
+
+if [ -d "/sys/class/power_supply/hid-CC253920301G61CA4-battery" ];
+then
+    perc=$(cat /sys/class/power_supply/hid-CC253920301G61CA4-battery/capacity)
+    echo ~/.config/tint2/icons/trackpad.svg
+    echo "$perc%"
+elif [ -d "/sys/class/power_supply/hid-d0:03:4b:de:08:22-battery" ];
+then
+    perc=$(cat /sys/class/power_supply/hid-d0:03:4b:de:08:22-battery/capacity)
+    echo ~/.config/tint2/icons/trackpad.svg
+    echo "$perc%"
+else
+    echo
+fi

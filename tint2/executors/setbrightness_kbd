@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Set the brightness level with a zenity dialog box
+
+# Dependencies: `xbacklight` or `light-git`, `zenity`
+
+device="sysfs/leds/asus::kbd_backlight"
+lvl=$(light -s $device -G)
+lvl=$(echo "($lvl+0.5)/33" | bc)
+
+dialog=$(yad --image="/usr/share/icons/ePapirus/64x64/apps/preferences-system-brightness-lock.svg" --width=420 --borders=10 --button=OK:0 --scale --value ${lvl} --min-value=0 --max-value=3 --step=1 --title "Brightness" --text "Set keyboard brightness")
+#dialog=$(zenity  --list --height=245  --text "Keyboard brightness" --radiolist  --column "" --column "Level" TRUE Max FALSE High FALSE Low FALSE Off)
+case $dialog in 
+    3)
+        set=100
+        ;;
+    2)
+        set=70
+        ;;
+    1)
+        set=40
+        ;;
+    *)
+        set=0
+        ;;
+esac
+
+light -s ${device} -S ${set}
