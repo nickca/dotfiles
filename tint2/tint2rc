@@ -34,7 +34,8 @@ border_color_pressed = #000000 0
 
 #-------------------------------------
 # Panel
-panel_items = PPPPTCEBEEEEPS
+#panel_items = PPPPTCEBEEEEPS
+panel_items = PPPPTEEBEEEEEEPSP
 panel_size = 100% 50
 panel_margin = 0 0
 panel_padding = 4 4 0
@@ -83,9 +84,9 @@ task_align = left
 # Task
 task_text = 1
 task_icon = 1
-task_centered = 1
+task_centered = 0
 urgent_nb_of_blink = 0
-task_maximum_size = 170 0
+task_maximum_size = 200 0
 task_padding = 12 0 0
 task_font = SauceCodePro Nerd Font Regular 20
 task_tooltip = 1
@@ -99,6 +100,28 @@ mouse_middle = none
 mouse_right = close
 mouse_scroll_up = none
 mouse_scroll_down = none
+
+# Executor 1
+execp = new  
+#execp_command = echo "Hello"
+#execp_command = wget --quiet "https://wttr.in/78726?format=4" 2>/dev/null -O - | cut -d : -f 2 | sed -e 's/^......//g'
+execp_command = ~/.config/tint2/executors/weather -i
+execp_interval = 1200
+execp_continuous = 0  
+execp_markup = 1  
+execp_tooltip =  
+execp_lclick_command =   
+execp_rclick_command =   
+execp_mclick_command =   
+execp_uwheel_command =   
+execp_dwheel_command =   
+execp_font = SauceCodePro Nerd Font Regular 14
+execp_font_color = #ffffff 100  
+execp_padding = 2 0  
+execp_background_id = 2  
+execp_centered = 0  
+execp_icon_w = 32  
+execp_icon_h = 32
 
 # Executor 1
 execp = new  
@@ -188,6 +211,28 @@ execp_centered = 0
 execp_icon_w = 32  
 execp_icon_h = 32
 
+# Executor 2
+execp = new  
+execp_command = ~/.config/tint2/executors/disk
+execp_interval = 120  
+execp_has_icon = 1  
+execp_cache_icon = 1  
+execp_continuous = 0  
+execp_markup = 1  
+execp_tooltip =   
+execp_lclick_command =   
+execp_rclick_command =   
+execp_mclick_command =   
+execp_uwheel_command =   
+execp_dwheel_command =   
+execp_font = sans 12
+execp_font_color = #ffffff 100  
+execp_padding = 2 0  
+execp_background_id = 2  
+execp_centered = 0  
+execp_icon_w = 32  
+execp_icon_h = 32
+
 # Executor 1
 execp = new  
 execp_command = ~/.config/tint2/executors/expressvpn
@@ -209,6 +254,7 @@ execp_background_id = 2
 execp_centered = 0  
 execp_icon_w = 32  
 execp_icon_h = 32
+
 
 
 # Separator 1
@@ -285,9 +331,10 @@ ac_disconnected_cmd =
 # Button 1
 button = new
 #button_icon = ~/.config/tint2/icons/search-icon.png
-button_icon = /usr/share/icons/ePapirus/64x64/ubuntu-logo-icon.svg
+button_icon = /usr/share/icons/ePapirus/64x64/apps/ubuntu-logo-icon.svg
 button_text = Search
-button_lclick_command = rofi -modi run,drun,window -lines 12 -padding 18 -width 60 -location 0 -show drun -sidebar-mode -columns 3 -font "SauceCodePro Nerd Font Regular 20"
+#button_lclick_command = rofi -modi run,drun,window -lines 12 -padding 18 -width 60 -location 0 -show drun -sidebar-mode -columns 3 -font "SauceCodePro Nerd Font Regular 20"
+button_lclick_command = ~/.config/rofi/bin/launcher_misc
 button_rclick_command = 
 button_mclick_command = 
 button_uwheel_command = 
@@ -354,6 +401,21 @@ button_icon = ~/.config/tint2/icons/brightness.svg
 button_text =
 button_lclick_command = ~/.config/tint2/executors/setbrightness
 button_rclick_command = ~/.config/tint2/executors/setbrightness_kbd
+button_mclick_command =
+button_uwheel_command =
+button_dwheel_command =
+button_font_color = #000000 100
+button_padding = 4 0
+button_background_id = 0
+button_centered = 0
+button_max_icon_size = 32
+
+# Button 5
+button = new
+button_icon = ~/.config/tint2/icons/power.svg
+button_text =
+button_lclick_command = ~/.config/rofi/applets/applets/powermenu.sh
+button_rclick_command =
 button_mclick_command =
 button_uwheel_command =
 button_dwheel_command =

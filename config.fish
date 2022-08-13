@@ -1,6 +1,6 @@
 # switch the welcome msg to a fortune
 function fish_greeting
-    /usr/games/fortune
+    /usr/games/fortune | /usr/games/cowsay | /usr/games/lolcat
     echo
 end
 # set cmd line editor to vi mode

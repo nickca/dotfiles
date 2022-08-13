@@ -1,2 +1,4 @@
 #!/bin/bash
-xdg-open "$(locate -i / | rofi -threads 0 -width 100 -dmenu -i -p "Find")"
+theme="blurry_find"
+dir="$HOME/.config/rofi/launchers/misc"
+xdg-open "$(locate -i / | rofi -threads 0 -width 100 -dmenu -i -p "Find" -theme $dir/"$theme")"

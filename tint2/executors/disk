@@ -1,0 +1,4 @@
+#!/bin/bash
+echo /usr/share/icons/Papirus/64x64/devices/drive-harddisk.svg
+disk=`df -h / | awk '/\//{ printf("%4s\n", $4) }' | sed -e s/^\ //g`
+echo "$disk"
