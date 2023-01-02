@@ -66,11 +66,12 @@ bindsym $mod+x exec $terminator
 # Custom bindsyms
 #bindsym $mod+p exec ~/.config/i3/bin/logout
 bindsym $mod+p ~/.config/rofi/applets/applets/powermenu.sh
-bindsym $mod+Shift+l exec /usr/bin/xscreensaver-command -lock
+#bindsym $mod+Shift+l exec /usr/bin/xscreensaver-command -lock
+bindsym $mod+Shift+l exec xset s activate
 bindsym $mod+c exec google-chrome
 bindsym $mod+r mode "resize"
 bindsym $mod+Shift+f exec /home/nickca/.config/i3/bin/rofifinder
-bindsym F1 exec /home/nickca/.config/i3/bin/helptext
+bindsym $mod+F1 exec /home/nickca/.config/i3/bin/helptext
 bindsym $mod+Tab workspace next
 bindsym $mod+Shift+Tab workspace prev
 bindsym $mod+Shift+x exec "wineserver -k"
@@ -267,14 +268,16 @@ exec_always --no-startup-id nitrogen --random --set-scaled ~/Pictures/straight_w
 exec_always --no-startup-id nm-applet
 exec_always --no-startup-id "qasmixer -t"
 exec_always --no-startup-id blueman-applet
-exec_always --no-startup-id touchegg
-exec_always --no-startup-id xscreensaver
+# exec_always --no-startup-id touchegg
+# exec_always --no-startup-id xscreensaver
+exec_always xss-lock -n /usr/libexec/xsecurelock/dimmer -l -- /home/nickca/screensaver
 exec --no-startup-id redshift-gtk
-exec_always --no-startup-id conky
+exec_always --no-startup-id /home/nickca/.conky/conky-startup.sh
 exec_always --no-startup-id flameshot
 # exec compton
 exec picom
 exec tint2
+exec touchegg
 
 
 # Bind App to workspace
@@ -287,11 +290,13 @@ assign [class="VirtualBox Manager"] $ws4
 assign [class="VirtualBox Machine"] $ws4
 assign [class="icloud-for-linux"] $ws5
 assign [class="ristretto"] $ws5
+assign [class="Ristretto"] $ws5
 assign [class="thunar"] $ws5
 assign [class="kdeconnect-app"] $ws5
 assign [class="1password"] $ws5
 assign [class="catfish"] $ws5
 assign [class="googleearth-bin"] $ws5
+assign [class="Spotify"] $ws5
 assign [class="do-not-directly-run-firestorm-bin"] $ws6
 assign [class="minecraft-launcher"] $ws6
 assign [class="Minecraft.*"] $ws6
@@ -330,7 +335,8 @@ bindsym $mod+Shift+q      mode $power_mode
 mode $power_mode {
     bindsym p         exec systemctl poweroff
     bindsym r         exec systemctl reboot 
-    bindsym l         exec /usr/bin/xscreensaver-command -lock
+    #bindsym l         exec /usr/bin/xscreensaver-command -lock
+    bindsym l         exec xset s activate
     bindsym q         exec --no-startup-id i3-msg exit, mode "default"
     bindsym h         exec sudo systemctl hibernate 
     bindsym s         exec sudo systemctl suspend

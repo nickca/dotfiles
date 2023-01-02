@@ -1,0 +1,74 @@
+conky.config = {
+
+background=true,
+update_interval=1,
+double_buffer=true,
+no_buffers=true,
+imlib_cache_size=10,
+
+draw_shades=true,
+draw_outline=false,
+draw_borders=false,
+
+gap_x=10,
+gap_y=10,
+
+alignment="top_right",
+
+minimum_height=2000,
+minimum_width=470,
+maximum_width=470,
+
+own_window=true,
+own_window_type="override",
+own_window_transparent=true,
+own_window_hints="undecorated,below,sticky,skip_taskbar,skip_pager",
+
+-- own_window_argb_visual=true,
+-- own_window_argb_value=0,
+
+use_xft=true,
+xftalpha=1,
+font="UbuntuThin:size=10",
+text_buffer_size=256,
+override_utf8_locale=true,
+
+default_color='FFFFFF',
+color0='FFFFFF',
+color1='FFFFFF',
+
+lua_load = '~/.conky/clock.lua',
+lua_draw_hook_pre = 'draw_clock',
+-- lua_load = '~/.conky/clock2.lua',
+-- lua_startup_hook = 'conky_load_config /home/nickca/.conky/clock2.conf',
+-- lua_draw_hook_pre = 'conky_clock',
+}
+
+conky.text = [[
+${font UbuntuBold:size=90}${color0}\
+$alignr\
+${time %H:%M}\
+${voffset -60}
+${font UbuntuMedium:size=30}${color0}\
+$alignc\
+${time %A %d %B}\
+
+${font UbuntuMedium:size=12}${color0}\
+_____________________________________________________________\
+
+${font UbuntuMedium:size=24}${color0}\
+${voffset 16}\
+${image /home/nickca/.conky/bbc-news-icon.png -s 48x48 -p 0,254}      BBC (World/US)\
+
+${font UbuntuMedium:size=12}${color0}\
+${execi 300 /home/nickca/.conky/rss.sh https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml}\
+
+_____________________________________________________________\
+
+${font UbuntuMedium:size=24}${color0}\
+${voffset 16}\
+${image /home/nickca/.conky/guardian-icon.png -s 48x48 -p 0,498}      Guardian (World/US)\
+
+${font UbuntuMedium:size=12}${color0}\
+${execi 300 /home/nickca/.conky/rss.sh https://www.theguardian.com/us-news/rss}\
+]]

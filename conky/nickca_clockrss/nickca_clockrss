@@ -1,0 +1,87 @@
+conky.config = {
+
+background=true,
+update_interval=1,
+double_buffer=true,
+no_buffers=true,
+imlib_cache_size=10,
+
+draw_shades=true,
+draw_outline=false,
+draw_borders=false,
+
+gap_x=10,
+gap_y=10,
+
+alignment="top_right",
+
+minimum_height=2000,
+minimum_width=470,
+maximum_width=470,
+
+own_window=true,
+own_window_type="override",
+own_window_transparent=true,
+own_window_hints="undecorated,below,sticky,skip_taskbar,skip_pager",
+
+-- own_window_argb_visual=true,
+-- own_window_argb_value=0,
+
+use_xft=true,
+xftalpha=1,
+font="UbuntuThin:size=10",
+text_buffer_size=256,
+override_utf8_locale=true,
+
+default_color='FFFFFF',
+color0='FFFFFF',
+color1='FFFFFF',
+color2='000000',
+color3='ffde00',
+color4='00f0ff',
+color5='db8424',
+color6='21e51a',
+
+lua_load = '~/.conky/clock.lua',
+-- lua_draw_hook_pre = 'draw_clock',
+-- lua_load = '~/.conky/clock2.lua',
+-- lua_startup_hook = 'conky_load_config /home/nickca/.conky/clock2.conf',
+-- lua_draw_hook_pre = 'conky_clock',
+}
+
+conky.text = [[
+${voffset 8}${font AvantGarde LT Medium:size=72}${color2}\
+$alignc\
+${goto 37}${time %I} ${goto 154}${time %M}${font}
+${image ./b.png -p 10,0 -s 271x160}
+${voffset -109}${goto 328}${color2}${font AvantGarde LT Medium:size=58}${time %d}${font}
+${voffset 2}${goto 354}${color2}${font AvantGarde LT Medium: size=16}${time %a}${font}
+${image ./c.png -p 286,0 -s 160x160}
+${voffset 6}${goto 26}${font Hurmit Nerd Font Mono:size=24}${color4}${offset 4}${voffset -4}${font UbuntuMedium:size=12}${color3}${fs_free /}${color0}/${color5}${fs_size /}${color0}${offset 82}${voffset -4}${font Hurmit Nerd Font Mono:size=24}${color4}${offset 4}${voffset -4}${font UbuntuMedium:size=12}${color3}${mem}${color0}/${color5}${memmax}${color0} 
+${goto 26}${fs_bar 4,164}${goto 270}${membar 4,164}
+${voffset -6}${goto 26}${font Hurmit Nerd Font Mono:size=24}${color4}${offset 4}${voffset -4}${font UbuntuMedium:size=12}${color0}1: ${color3}${cpu cpu0}%${color0}/${color5}${freq_g cpu0}Ghz${offset 8}${voffset -4}${goto 268}${font Hurmit Nerd Font Mono:size=24}${color4}${offset 4}${voffset -4}${font UbuntuMedium:size=12}${color0}2: ${color3}${cpu cpu1}%${color0}/${color5}${freq_g cpu1}Ghz${color0}
+${goto 26}${cpugraph cpu0 12,164 ff000d 5aaaff}${goto 270}${cpugraph cpu1 12,164 ff000d 5aaaff}
+${voffset -6}${goto 26}${font Hurmit Nerd Font Mono:size=24}${color4}${offset 4}${voffset -4}${font UbuntuMedium:size=12}${color0}3: ${color3}${cpu cpu2}%${color0}/${color5}${freq_g cpu2}Ghz${offset 8}${voffset -4}${goto 268}${font Hurmit Nerd Font Mono:size=24}${color4}${offset 4}${voffset -4}${font UbuntuMedium:size=12}${color0}4: ${color3}${cpu cpu3}%${color0}/${color5}${freq_g cpu3}Ghz${color0}
+${goto 26}${cpugraph cpu2 12,164 ff000d 5aaaff}${goto 270}${cpugraph cpu3 12,164 ff000d 5aaaff}
+${goto 26}${font Hurmit Nerd Font Mono:size=24}${color6}${color0}${offset 4}${voffset -4}${font UbuntuMedium:size=12}${offset 4}SSID: ${execi 3600 nmcli -t -f active,ssid dev wifi | egrep '^yes' | cut -d\' -f2 | cut -d\: -f2 | head -1}${offset 8}Signal: ${wireless_link_qual wlp1s0}%${offset 8}
+${goto 54}Local: ${execi 3600 hostname -I | awk '{ print $1 }' }${offset 8}Pub: ${execi 3600 curl ifconfig.co}
+${goto 54}Up: ${upspeed wlp1s0}/${totalup wlp1s0}${offset 8}Down: ${downspeed wlp1s0}/${totaldown wlp1s0}
+${font UbuntuMedium:size=12}${color0}\
+${voffset -32}
+_____________________________________________________________\
+
+${font UbuntuMedium:size=16}${color0}\
+${voffset 8}\
+${image /home/nickca/.conky/bbc-news-icon.png -s 32x32 -p 22,335}${offset 60}BBC (World/US)\
+
+${font UbuntuMedium:size=12}${color0}\
+${execi 300 /home/nickca/.conky/rss.sh https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml}\
+
+_____________________________________________________________\
+${voffset 8}
+${font UbuntuMedium:size=16}${color0}\
+${image /home/nickca/.conky/guardian-icon.png -s 32x32 -p 22,551}${offset 60}Guardian (World/US)\
+
+${font UbuntuMedium:size=12}${color0}\
+${execi 300 /home/nickca/.conky/rss.sh https://www.theguardian.com/us-news/rss}\
+]]

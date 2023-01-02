@@ -1,5 +1,5 @@
 " Nick's K-Rad vimrc - MacVim version
-" Last Updated: Fri Feb 16 21:05:46 2018
+" Last Updated: Mon 31 Oct 2022 11:41:29 AM CDT
 " NOTES: Installing Powerline
 " Download the Inconsolata for Powerline font from here:
 " https://github.com/powerline/fonts/blob/master/Inconsolata/Inconsolata%20for%20Powerline.otf
@@ -24,6 +24,7 @@ Plug 'vim-scripts/EasyAccents'
 "Plug 'inkarkat/vim-IndentConsistencyCop'
 "Plug 'inkarkat/vim-IndentConsistencyCopAutoCmds'
 Plug 'vim-scripts/Yow'
+Plug 'smancill/conky-syntax.vim'
 call plug#end()
 " }}}
 
