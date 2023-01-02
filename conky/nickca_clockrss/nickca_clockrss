@@ -63,8 +63,8 @@ ${voffset -6}${goto 26}${font Hurmit Nerd Font Mono:size=24}${color4}${offset
 ${goto 26}${cpugraph cpu0 12,164 ff000d 5aaaff}${goto 270}${cpugraph cpu1 12,164 ff000d 5aaaff}
 ${voffset -6}${goto 26}${font Hurmit Nerd Font Mono:size=24}${color4}${offset 4}${voffset -4}${font UbuntuMedium:size=12}${color0}3: ${color3}${cpu cpu2}%${color0}/${color5}${freq_g cpu2}Ghz${offset 8}${voffset -4}${goto 268}${font Hurmit Nerd Font Mono:size=24}${color4}${offset 4}${voffset -4}${font UbuntuMedium:size=12}${color0}4: ${color3}${cpu cpu3}%${color0}/${color5}${freq_g cpu3}Ghz${color0}
 ${goto 26}${cpugraph cpu2 12,164 ff000d 5aaaff}${goto 270}${cpugraph cpu3 12,164 ff000d 5aaaff}
-${goto 26}${font Hurmit Nerd Font Mono:size=24}${color6}${color0}${offset 4}${voffset -4}${font UbuntuMedium:size=12}${offset 4}SSID: ${execi 3600 nmcli -t -f active,ssid dev wifi | egrep '^yes' | cut -d\' -f2 | cut -d\: -f2 | head -1}${offset 8}Signal: ${wireless_link_qual wlp1s0}%${offset 8}
-${goto 54}Local: ${execi 3600 hostname -I | awk '{ print $1 }' }${offset 8}Pub: ${execi 3600 curl ifconfig.co}
+${goto 26}${font Hurmit Nerd Font Mono:size=24}${color6}${color0}${offset 4}${voffset -4}${font UbuntuMedium:size=12}${offset 4}SSID: ${execi 30 nmcli -t -f active,ssid dev wifi | egrep '^yes' | cut -d\' -f2 | cut -d\: -f2 | head -1}${offset 8}Signal: ${wireless_link_qual wlp1s0}%${offset 8}
+${goto 54}Local: ${execi 30 hostname -I | awk '{ print $1 }' }${offset 8}Pub: ${if_match "${exec ~/.conky/vpn.sh}" == "Not connected"}${font Hurmit Nerd Font Mono:size=24}${voffset -4}嬨${offset 4}${font UbuntuMedium:size=12}${else}${font Hurmit Nerd Font Mono:size=24}${voffset -4}${color6}嬨${color0}${offset 4}${font UbuntuMedium:size=12}${endif}${voffset -4}${execi 30 curl ifconfig.co}
 ${goto 54}Up: ${upspeed wlp1s0}/${totalup wlp1s0}${offset 8}Down: ${downspeed wlp1s0}/${totaldown wlp1s0}
 ${font UbuntuMedium:size=12}${color0}\
 ${voffset -32}
