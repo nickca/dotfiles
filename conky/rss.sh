@@ -28,12 +28,12 @@ do
 	fi
 	# get the char count
 	wc=$(echo -n $item | wc -c)
-	if (("$wc" <= 54))
+	if (("$wc" <= 50))
 	then
 		# if it's less than 54 add an extra newline
 		echo -ne "     ▶$item\n\n"
 	else
-		# otherwise format it to 50-54 chars
+		# otherwise format it to 52-56 chars
 		#itemn=$(echo -ne "$item" | fmt -s -w 54 -g 50)
 		echo -ne "     ▶$item" | fmt -s -w 54 -g 50
 	fi

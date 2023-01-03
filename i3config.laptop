@@ -264,7 +264,7 @@ set $m2 #FFF0E0
 # Startup programs
 exec --no-startup-id dunst 
 exec --no-startup-id clipit
-exec_always --no-startup-id nitrogen --random --set-scaled ~/Pictures/straight_wallpapers/
+exec_always --no-startup-id nitrogen --random --set-scaled ~/Pictures/SafeHeels_Wallpaper/
 exec_always --no-startup-id nm-applet
 exec_always --no-startup-id "qasmixer -t"
 exec_always --no-startup-id blueman-applet
