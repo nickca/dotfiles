@@ -41,12 +41,6 @@ color3='ffde00',
 color4='00f0ff',
 color5='db8424',
 color6='21e51a',
-
-lua_load = '~/.conky/clock.lua',
--- lua_draw_hook_pre = 'draw_clock',
--- lua_load = '~/.conky/clock2.lua',
--- lua_startup_hook = 'conky_load_config /home/nickca/.conky/clock2.conf',
--- lua_draw_hook_pre = 'conky_clock',
 }
 
 conky.text = [[
