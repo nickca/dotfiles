@@ -48,8 +48,8 @@ ${voffset 8}${font AvantGarde LT Medium:size=72}${color2}\
 $alignc\
 ${goto 37}${time %I} ${goto 154}${time %M}${font}
 ${image ./b.png -p 10,0 -s 271x160}
-${voffset -109}${goto 328}${color2}${font AvantGarde LT Medium:size=58}${time %d}${font}
-${voffset 2}${goto 354}${color2}${font AvantGarde LT Medium: size=16}${time %a}${font}
+${voffset -109}${goto 328}${color2}${font AvantGarde LT Medium:size=58}${time %e}${font}
+${voffset 2}${goto 357}${color2}${font Fantasque Sans Mono: size=16}${time %a}${font}
 ${image ./c.png -p 286,0 -s 160x160}
 ${voffset 6}${goto 26}${font Hurmit Nerd Font Mono:size=24}${color4}${offset 4}${voffset -4}${font UbuntuMedium:size=12}${color3}${fs_free /}${color0}/${color5}${fs_size /}${color0}${offset 82}${voffset -4}${font Hurmit Nerd Font Mono:size=24}${color4}${offset 4}${voffset -4}${font UbuntuMedium:size=12}${color3}${mem}${color0}/${color5}${memmax}${color0} 
 ${goto 26}${fs_bar 4,164}${goto 270}${membar 4,164}
