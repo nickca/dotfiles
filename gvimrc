@@ -24,6 +24,8 @@ Plug 'vim-scripts/EasyAccents'
 "Plug 'inkarkat/vim-IndentConsistencyCop'
 "Plug 'inkarkat/vim-IndentConsistencyCopAutoCmds'
 Plug 'vim-scripts/Yow'
+Plug 'smancill/conky-syntax.vim'
+Plug 'dracula/vim',{'as':'dracula'}
 call plug#end()
 " }}}
 
@@ -52,7 +54,8 @@ set smarttab
 set smartindent
 set autoindent
 set expandtab
-colo solarized
+"colo solarized
+colo dracula
 "}}}
 
 " For MacVim GUI, set the following options {{{

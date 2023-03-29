@@ -1,35 +1,39 @@
 " Nick's K-Rad vimrc - MacVim version
-" Last Updated: Mon 31 Oct 2022 11:41:29 AM CDT
+" Last Updated: Sat 14 Jan 2023 05:42:04 PM CST
 " NOTES: Installing Powerline
 " Download the Inconsolata for Powerline font from here:
 " https://github.com/powerline/fonts/blob/master/Inconsolata/Inconsolata%20for%20Powerline.otf
 " On macOS:
 " $ brew install python
 " $ pip install --user powerline-status
-" Install plugins: https://github.com/junegunn/vim-plug {{{
-let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
-if empty(glob(data_dir . '/autoload/plug.vim'))
-  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-endif
-autocmd VimEnter * PlugUpdate
-" }}}
-" PLUGINS {{{
-call plug#begin()
-Plug 'preservim/NERDTree'
-Plug 'preservim/nerdcommenter'
-Plug 'ervandew/supertab'
-Plug 'vim-scripts/EasyAccents'
+set nocompatible
+" Plugins: https://github.com/VundleVim/Vundle.vim {{{
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+set shell=/bin/bash
+
+call vundle#begin()
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'preservim/NERDTree'
+Plugin 'vim-scripts/EasyAccents'
 "Plug 'inkarkat/vim-ingo-library'
 "Plug 'inkarkat/vim-IndentConsistencyCop'
 "Plug 'inkarkat/vim-IndentConsistencyCopAutoCmds'
-Plug 'vim-scripts/Yow'
-Plug 'smancill/conky-syntax.vim'
-call plug#end()
+Plugin 'vim-scripts/Yow'
+Plugin 'smancill/conky-syntax.vim'
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
+Plugin 'jayli/vim-easycomplete'
+Plugin 'tpope/vim-commentary'
+Plugin 'dag/vim-fish'
+Plugin 'dracula/vim',{'as':'dracula'}
+Plugin 'openuado/vimtips-fortune'
+Plugin 'dense-analysis/ale'
+call vundle#end()
+autocmd VimEnter * PluginUpdate
 " }}}
 
 " Set various options {{{
-set nocompatible
 syntax on
 "set backup
 set foldmethod=marker
@@ -53,7 +57,9 @@ set smarttab
 set smartindent
 set autoindent
 set expandtab
-colo solarized
+set number
+"colo solarized
+colo dracula
 "}}}
 
 " For MacVim GUI, set the following options {{{
@@ -115,22 +121,25 @@ endif
 
 " Toolbar
 " NERD Comment
-amenu <silent> icon=/Users/nickca/.vim/bitmaps/comment.png ToolBar.comment ,cs<CR>
-tmenu ToolBar.comment Comment out line/selection
-amenu <silent> icon=/Users/nickca/.vim/bitmaps/uncomment.png ToolBar.uncomment ,cu<CR>
-tmenu ToolBar.uncomment Uncomment line/selection
+" amenu <silent> icon=/Users/nickca/.vim/bitmaps/comment.png ToolBar.comment ,cs<CR>
+" tmenu ToolBar.comment Comment out line/selection
+" amenu <silent> icon=/Users/nickca/.vim/bitmaps/uncomment.png ToolBar.uncomment ,cu<CR>
+" tmenu ToolBar.uncomment Uncomment line/selection
+" vim-commentary
+"amenu <silent> icon=/Users/nickca/.vim/bitmaps/comment.png ToolBar.comment ,gcc<CR>
+"tmenu ToolBar.comment Comment/uncomment line/selection
 
-amenu ToolBar.-sep3- <Nop>
+"amenu ToolBar.-sep3- <Nop>
 
 "New Tab
-amenu <silent> icon=/Users/nickca/.vim/bitmaps/newtab.png ToolBar.newtab :tabnew<CR>
-tmenu ToolBar.newtab Open a new tab.
+"amenu <silent> icon=/Users/nickca/.vim/bitmaps/newtab.png ToolBar.newtab :tabnew<CR>
+"tmenu ToolBar.newtab Open a new tab.
 "NERD Tree
-amenu <silent> icon=/Users/nickca/.vim/bitmaps/nerdtree.png ToolBar.nerdtree :NERDTree<CR>
-tmenu ToolBar.nerdtree Open a nerdtree.
+"amenu <silent> icon=/Users/nickca/.vim/bitmaps/nerdtree.png ToolBar.nerdtree :NERDTree<CR>
+"tmenu ToolBar.nerdtree Open a nerdtree.
 "Restore Syntax
-amenu <silent> icon=/Users/nickca/.vim/bitmaps/syntaxon.png ToolBar.syntaxon :syntax on<CR>
-tmenu ToolBar.syntaxon Restore syntax color (after netrw save)
+"amenu <silent> icon=/Users/nickca/.vim/bitmaps/syntaxon.png ToolBar.syntaxon :syntax on<CR>
+"tmenu ToolBar.syntaxon Restore syntax color (after netrw save)
 "}}}
 
 " Custom status bar {{{
@@ -163,10 +172,10 @@ nnoremap <SPACE> <C-F>
 " Source .vimrc after saving
 "au BufWritePost ~/.vimrc so ~/.vimrc
 " If no omnifunc exists, load syntax completion
-au Filetype *
-	\ if &omnifunc == "" |
-	\		setlocal omnifunc=syntaxcomplete#Complete |
-	\ endif
+"au Filetype *
+"	\ if &omnifunc == "" |
+"	\		setlocal omnifunc=syntaxcomplete#Complete |
+"	\ endif
 " Update 'Last Updated' date on write
 au BufWrite * ks|call DateRev()|'s
 
@@ -200,7 +209,6 @@ EOF
 " Command mappings {{{
 " Insert a 'Lorem ipsum' on the current line
 com! Lorem py vim.current.line = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-com! UpdatePlugins !~/.vim/update_plugins.sh
 "}}}
 
 " Functions {{{
@@ -246,47 +254,6 @@ EOF
 endfunc
 "}}}
 
-" Function to insert a template for a new HTML (XHTML Transitional) file {{{
-" Arguments are (page title,stylesheet,external javascript), title required
-func! HTMLTemp(title, ...)
-python3 << EOF
-from datetime import datetime,date,time
-d = datetime.now()
-args = []
-for i in range(1, int(vim.eval("a:0")) + 1):
-	args.append(vim.eval("a:{%d}" % i))
-template = """<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-        <meta http-equiv="Content-Language" content="en-us" />
-        <meta name="author" content="Nick Caccamisi" />
-        <meta name="generator" content="Vim 7" />
-        <meta name="revised" content="%s" />
-        <title>%s</title>
-""" % (d.strftime("%c"),vim.eval("a:title"))
-if len(args):
-	if len(args) == 1:
-		template += """        <link rel="stylesheet" href="%s" type="text/css" />
-""" % args[0]
-	elif len(args) == 2:
-		template += """        <link rel="stylesheet" href="%s" type="text/css" />
-""" % args[0]
-		template += """        <script src="%s" type="text/javascript"></script>
-""" % args[1]
-template += """    </head>
-    <body>
-    </body>
-</html>"""
-
-for line in reversed(template.splitlines()):
-	vim.current.range.append(line.rstrip())
-EOF
-endfunc
-com! -nargs=+ HTMLTemplate call HTMLTemp(<f-args>)
-" }}}
-
 " Function to update 'Last Updated' tag {{{
 " Search first 15 lines for 'Last Updated: ' (generic), '__date__ = ' (Python) or a 'revised' metatag (HTML).
 func! DateRev()
@@ -307,70 +274,6 @@ func! DateRev()
 		endif
 	endif
 endfunc
-" }}}
-
-" Function to insert a template for a new Python file {{{
-func! PyTemp()
-python3 << EOF
-from datetime import datetime,date,time
-d = datetime.now()
-dt = d.strftime("%c")
-fna = vim.current.buffer.name.split("/")
-fn = fna[len(fna) - 1]
-template = """
-#!/usr/bin/python
-# %s: Description here
-# Last Updated: %s
-__author__ = 'Nick Caccamisi'
-__date__ = '%s'
-
-# Imports
-
-if __name__ == "__main__":
-""" % (fn,dt,dt)
-for line in reversed(template.splitlines()):
-	vim.current.range.append(line.rstrip())
-EOF
-endfunc
-com! PyTemplate call PyTemp()
-" }}}
-
-" Function to auto-add templates for Python classes {{{
-func! PyNC(name, ...)
-python3 << EOF
-append = vim.current.range.append
-args = []
-for i in range(1, int(vim.eval("a:0")) + 1):
-	args.append(vim.eval("a:{%d}" % i))
-
-append("class %s:" % vim.eval("a:name"))
-init = "    def __init__ (self"
-for arg in args:
-	init += ", %s" % arg
-append(init + "):")
-for arg in args:
-	append("        self.%s = %s" % (arg, arg))
-EOF
-endfunc
-com! -nargs=+ PyNewClass call PyNC(<f-args>)
-" }}}
-
-" Function to auto-add templates for Python class methods {{{
-func! PyMeth(name, ...)
-python3 << EOF
-append = vim.current.range.append
-args = []
-for i in range(1, int(vim.eval("a:0")) + 1):
-	args.append(vim.eval("a:{%d}" % i))
-
-method_s = "    def %s (self" % vim.eval("a:name")
-for arg in args:
-	method_s += ", %s" % arg
-method_s += "):"
-append(method_s)
-EOF
-endfunc
-com! -nargs=+ PyNewMethod call PyMeth(<f-args>)
 " }}}
 
 " Function to initiate Transmit sync via AppleScript (Mac Only!) {{{

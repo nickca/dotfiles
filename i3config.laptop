@@ -311,38 +311,38 @@ assign [window_role="browser"] $ws2
 # to launch FoxiReader, Skype, lxappearance, thunderbird, VirtualBox,
 # KVM Virt-manager, spectacle, pcmanfm file manager, 
 # or return to the default mode, respectively.
-set $mode_launcher Launcher
-bindsym $mod+o mode "$mode_launcher"
-
-mode "$mode_launcher" {
-    bindsym f exec FoxitReader 
-    bindsym s exec skypeforlinux
-    bindsym l exec lxappearance  
-    bindsym m exec thunderbird  
-    bindsym v exec VirtualBox 
-    bindsym k exec virt-manager 
-    bindsym d exec spectacle 
-    bindsym t exec "pcmanfm /home/koromicha"
-
-    bindsym Esc mode "default"
-    bindsym Return mode "default"
-}
-
-# Shutdown, Reboot, Lock Screen, and Logout 
-
-set $power_mode "power"
-bindsym $mod+Shift+q      mode $power_mode
-mode $power_mode {
-    bindsym p         exec systemctl poweroff
-    bindsym r         exec systemctl reboot 
-    #bindsym l         exec /usr/bin/xscreensaver-command -lock
-    bindsym l         exec xset s activate
-    bindsym q         exec --no-startup-id i3-msg exit, mode "default"
-    bindsym h         exec sudo systemctl hibernate 
-    bindsym s         exec sudo systemctl suspend
-    bindsym Return    mode "default"
-    bindsym Escape    mode "default"
-}
+#set $mode_launcher Launcher
+#bindsym $mod+o mode "$mode_launcher"
+#
+#mode "$mode_launcher" {
+#    bindsym f exec FoxitReader 
+#    bindsym s exec skypeforlinux
+#    bindsym l exec lxappearance  
+#    bindsym m exec thunderbird  
+#    bindsym v exec VirtualBox 
+#    bindsym k exec virt-manager 
+#    bindsym d exec spectacle 
+#    bindsym t exec "pcmanfm /home/koromicha"
+#
+#    bindsym Esc mode "default"
+#    bindsym Return mode "default"
+#}
+#
+## Shutdown, Reboot, Lock Screen, and Logout 
+#
+#set $power_mode "power"
+#bindsym $mod+Shift+q      mode $power_mode
+#mode $power_mode {
+#    bindsym p         exec systemctl poweroff
+#    bindsym r         exec systemctl reboot 
+#    #bindsym l         exec /usr/bin/xscreensaver-command -lock
+#    bindsym l         exec xset s activate
+#    bindsym q         exec --no-startup-id i3-msg exit, mode "default"
+#    bindsym h         exec sudo systemctl hibernate 
+#    bindsym s         exec sudo systemctl suspend
+#    bindsym Return    mode "default"
+#    bindsym Escape    mode "default"
+#}
 
 # Floating windows
 for_window [window_role="task_dialog|bubble|page-info|Preferences|pop-up"] floating enable
