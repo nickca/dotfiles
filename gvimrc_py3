@@ -1,5 +1,5 @@
 " Nick's K-Rad vimrc - MacVim version
-" Last Updated: Sat 14 Jan 2023 05:42:04 PM CST
+" Last Updated: Sun 09 Apr 2023 12:21:44 AM CDT
 " NOTES: Installing Powerline
 " Download the Inconsolata for Powerline font from here:
 " https://github.com/powerline/fonts/blob/master/Inconsolata/Inconsolata%20for%20Powerline.otf
@@ -29,6 +29,7 @@ Plugin 'dag/vim-fish'
 Plugin 'dracula/vim',{'as':'dracula'}
 Plugin 'openuado/vimtips-fortune'
 Plugin 'dense-analysis/ale'
+Plugin 'kmonad/kmonad-vim'
 call vundle#end()
 autocmd VimEnter * PluginUpdate
 " }}}

@@ -275,9 +275,10 @@ exec --no-startup-id redshift-gtk
 exec_always --no-startup-id /home/nickca/.conky/conky-startup.sh
 exec_always --no-startup-id flameshot
 # exec compton
-exec picom
-exec tint2
-exec touchegg
+exec_always picom
+exec_always tint2
+exec_always touchegg
+exec_always --no-startup-id /usr/local/bin/kmonad /home/nickca/vt100.kbd
 
 
 # Bind App to workspace
@@ -285,7 +286,7 @@ exec touchegg
 assign [class="chromium"] $ws2
 assign [class="Firefox"] $ws2
 assign [class="Gimp"] $ws3
-assign [class="cool-retro-term"] $ws4
+assign [class="cool-retro-term"] $ws3
 assign [class="VirtualBox Manager"] $ws4
 assign [class="VirtualBox Machine"] $ws4
 assign [class="icloud-for-linux"] $ws5
