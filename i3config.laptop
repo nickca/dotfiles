@@ -184,6 +184,10 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
+# emoji and print screen
+bindsym Ctrl+$mod+p exec "flameshot gui"
+bindsym Ctrl+$mod+e exec "/home/nickca/splatmoji/splatmoji copy"
+
 # resize window (you can also use the mouse for that)
 mode "resize" {
         # These bindings trigger as soon as you enter the resize mode
@@ -264,21 +268,19 @@ set $m2 #FFF0E0
 # Startup programs
 exec --no-startup-id dunst 
 exec --no-startup-id clipit
-exec_always --no-startup-id nitrogen --random --set-scaled ~/Pictures/SafeHeels_Wallpaper/
-exec_always --no-startup-id nm-applet
-exec_always --no-startup-id "qasmixer -t"
-exec_always --no-startup-id blueman-applet
-# exec_always --no-startup-id touchegg
-# exec_always --no-startup-id xscreensaver
-exec_always xss-lock -n /usr/libexec/xsecurelock/dimmer -l -- /home/nickca/screensaver
+exec --no-startup-id nitrogen --random --set-scaled ~/Pictures/SafeHeels_Wallpaper/
+exec --no-startup-id nm-applet
+exec --no-startup-id "qasmixer -t"
+exec --no-startup-id blueman-applet
+exec --no-startup-id xss-lock -n /usr/libexec/xsecurelock/dimmer -l -- /home/nickca/screensaver
 exec --no-startup-id redshift-gtk
-exec_always --no-startup-id /home/nickca/.conky/conky-startup.sh
-exec_always --no-startup-id flameshot
+exec --no-startup-id /home/nickca/.conky/conky-startup.sh
+exec --no-startup-id flameshot
 # exec compton
-exec_always picom
-exec_always tint2
-exec_always touchegg
-exec_always --no-startup-id /usr/local/bin/kmonad /home/nickca/vt100.kbd
+exec --no-startup-id picom
+exec --no-startup-id tint2
+exec --no-startup-id touchegg
+#exec --no-startup-id /usr/local/bin/kmonad /home/nickca/vt100.kbd
 
 
 # Bind App to workspace
