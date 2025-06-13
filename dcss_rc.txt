@@ -1,0 +1,570 @@
+##### Crawl Init file ###############################################
+# For descriptions of all options, as well as some more in-depth information
+# on setting them, consult the file
+#    options_guide.txt
+# in your /docs directory. If you can't find it, the file is also available
+# online at:
+# https://github.com/crawl/crawl/blob/master/crawl-ref/docs/options_guide.txt
+#
+# Crawl uses the first file of the following list as its option file:
+#  * init.txt in the -rcdir directory (if specified)
+#  * .crawlrc in the -rcdir directory (if specified)
+#  * init.txt (in the Crawl directory)
+#  * ~/.crawl/init.txt (Unix only)
+#  * ~/.crawlrc (Unix only)
+#  * ~/init.txt (Unix only)
+#  * settings/init.txt (in the Crawl directory)
+
+##### Some basic explanation of option syntax #######################
+# Lines beginning with '#' are comments. The basic syntax is:
+#
+# field = value         or      field.subfield = value
+#
+# Only one specification is allowed per line.
+#
+# The terms are typically case-insensitive except in the fairly obvious
+# cases (the character's name and specifying files or directories when
+# on a system that has case-sensitive filenames).
+#
+# White space is stripped from the beginning and end of the line, as
+# well as immediately before and after the '='. If the option allows
+# multiple comma/semicolon-separated terms (such as
+# autopickup_exceptions), all whitespace around the separator is also
+# trimmed. All other whitespace is left intact.
+#
+# There are three broad types of Crawl options: true/false values (booleans),
+# arbitrary values, and lists of values. The first two types use only the
+# simple =, with later options - which includes your options that are different
+# from the defaults - overriding earlier ones. List options allow using +=, ^=,
+# -=, and = to append, prepend, remove, and reset, respectively. Usually you will
+# want to use += to add to a list option. Lastly, there is := which you can use
+# to create an alias, like so:
+#   ae := autopickup_exceptions
+# From there on, 'ae' will be treated as if it you typed autopickup_exceptions,
+# so you can save time typing it.
+#
+
+##### Other files ###################################################
+# You can include other files from your options file using the 'include'
+# option. Crawl will treat it as if you copied the whole text of that file
+# into your options file in that spot. You can uncomment some of the following
+# lines by removing the beginning '#' to include some of the other files in
+# this folder.
+
+# Some useful, more advanced options, implemented in LUA.
+# include = advanced_optioneering.txt
+
+# Alternative vi bindings for Dvorak users.
+# include = dvorak_command_keys.txt
+
+# Alternative vi bindings for Colemak users.
+# include = colemak_command_keys.txt
+
+# Override the vi movement keys with a non-command.
+# include = no_vi_command_keys.txt
+
+# Turn the shift-vi keys into safe move, instead of run.
+# include = safe_move_shift.txt
+
+##### Ancient versions ##############################################
+# If you're used to the interface of ancient versions of Crawl, you may
+# get back parts of it by uncommenting the following options:
+
+# include                 = 034_command_keys.txt
+
+# And to revert monster glyph and colouring changes:
+
+# include                 = 034_monster_glyphs.txt
+# include                 = 052_monster_glyphs.txt
+# include                 = 060_monster_glyphs.txt
+# include                 = 071_monster_glyphs.txt
+# include                 = 080_monster_glyphs.txt
+# include                 = 0.9_monster_glyphs.txt
+# include                 = 0.12_monster_glyphs.txt
+# include                 = 0.13_monster_glyphs.txt
+# include                 = 0.14_monster_glyphs.txt
+
+autofight_caught = true
+autofight_stop= 80
+autofight_warning = 100
+
+hp_warning = 50
+mp_warning = 33
+
+explore_delay = 20
+
+show_more = false
+
+pickup_mode=multi
+
+default_manual_training=true
+
+travel_delay=-1
+view_delay = 300
+show_travel_trail=true
+
+explore_auto_rest = true
+#confirm_butcher = never
+#easy_eat_chunks = true
+#auto_eat_chunks = true
+#auto_butcher = satiated
+travel_open_doors = true
+
+auto_switch = true
+autofight_throw = true
+
+easy_confirm = safe
+
+automagic_enable = true
+automagic_slot = A
+automagic_fight = true
+automagic_stop = 33
+
+autopickup_search = true
+
+macros += M ` ===print_mons_in_sight
+
+bindkey = [~] CMD_LUA_CONSOLE
+
+tile_filter_scaling = true
+
+# tile_layout_priority = monster,minimap,spell,ability,inventory,gold_turn
+
+# The following options are nonstandard and depend on my scripts
+
+# ---- Threat Manager ----
+# include += threats.lua
+{
+---------------------------------------------------------------------------
+-- threats.lua
+-- Displays monster threat information in a similar manner to Online tiles.
+-- Can be configured to cause a show_more when encountering dangerous monsters.
+---------------------------------------------------------------------------
+
+-- If fewer than N monsters of threat level M appear on screen at the same time, and the maximum threat level is M, then set the maximum threat level to 0
+DANGER_THRESHOLD_DANGEROUS = 2              -- Fewer than 2 Dangerous Enemies = SAFE
+-- (THEN, ) If N or more monsters of threat level M appear on screen at the same time, and the maximum threat level is M, then increase the maximum threat level by 1
+DANGER_GROUP_EASY = 5                       -- 5 or more Weak enemies = DANGEROUS
+DANGER_GROUP_DANGEROUS = 3                  -- 3 or more Dangerous enemies = EXTREMELY DANGEROUS
+
+ -- Contains information about the monsters we're seeing and their per-type counts.
+spotted_mons = { }
+ -- Returns the threat level of a monster at the given coordinates
+local function get_mons_threat(dx,dy)
+    m = monster.get_monster_at(dx,dy)
+    -- Ignore neutrals/friendlies, plants/fungi and targets behind glass walls (has a few edge cases but it's good enough)
+    if not m or m:attitude() > 0 or m:is_firewood() or not you.see_cell_no_trans(dx, dy) then
+        return -1
+    end
+    return m:threat()
+end
+-- Helper that returns the length of dictionaries as well
+local function tbl_len(t)
+    local count = 0
+    for _ in pairs(t) do count = count + 1 end
+    return count
+end
+
+-- Updates spotted_mons and returns the highest danger level.
+local function most_dangerous_mons_in_los()
+    spotted_mons = { }
+    local los_radius = you.los()
+    local x, y
+    local max = -1
+    -- If too many weaklings are on screen, we may return a higher danger level
+    local easy_count = 0
+    local dangerous_count = 0
+    local extremely_dangerous_count = 0
+    -- For each tile in LOS
+    for x = -los_radius,los_radius do
+        for y = -los_radius,los_radius do
+            t = get_mons_threat(x, y)
+            -- If there's a monster, add it to spotted_mons and think about dupes later
+            if t >= 0 then
+                m = monster.get_monster_at(x, y)
+                table.insert(spotted_mons, m)
+            end
+            -- Also keep track of the maximum danger level obviously
+            if t >= max then
+                max = t
+            end
+            if t == 3 then
+                extremely_dangerous_count = extremely_dangerous_count + 1
+            elseif t == 2 then
+                dangerous_count = dangerous_count + 1
+            elseif t == 1 then
+                easy_count = easy_count + 1
+            end
+        end
+    end
+
+    local hp_pct = get_hp_pct()
+    local DTD = hp_pct > 0.5 and DANGER_THRESHOLD_DANGEROUS or math.ceil(DANGER_THRESHOLD_DANGEROUS / 2)
+    local DGD = hp_pct > 0.5 and DANGER_GROUP_DANGEROUS or math.ceil(DANGER_GROUP_DANGEROUS / 2)
+    local DGE = hp_pct > 0.5 and DANGER_GROUP_EASY or math.ceil(DANGER_GROUP_EASY / 2)
+
+    -- If the following threshold is set appropriately, you can ignore small packs of Dangerous enemies.
+    if max == 2 and dangerous_count <= DTD then
+        max = 1
+    end
+    -- Lots of Easy enemies can raise the danger level from Safe to Dangerous, but not higher.
+    -- Lots of Dangerous enemies can raise the danger level from Dangerous to Extremely Dangerous, but not higher.
+    if (max < 3 and dangerous_count >= DGD) or (max < 2 and easy_count >= DGE) then
+        max = max + 1
+    end
+
+    unique_mons = { }
+    -- Remove duplicates by keeping track of their count.
+    -- (note: only the most recent monster instance is kept, but we only care about its generalities)
+    for k, v in pairs(spotted_mons) do
+        local name = v:name()
+        if unique_mons[name] == nil then
+            unique_mons[name] = { monster = v, count = 1 }
+        else
+            unique_mons[name] = { monster = v, count = unique_mons[name].count + 1 }
+        end
+    end
+    spotted_mons = unique_mons
+    return max
+end
+
+function danger_to_glyph(d)
+    if d < 0 then
+        return "<darkgray>S</darkgray>"
+    elseif d == 0 then
+        return "<lightgray>S</lightgray>"
+    elseif d == 1 then
+        return "<white>S</white>"
+    elseif d == 2 then
+        return "<yellow>D</yellow>"
+    elseif d == 3 then
+        return "<lightred>E</lightred>"
+    end
+end
+
+-- If we spot a dangerous enemy, alert the player. You may wish to add this to your rc:
+-- force_more_message += You're in danger!
+-- force_more_message += You're in extreme danger!
+prev_threat_level = -1
+function alert_if_in_danger()
+    danger = most_dangerous_mons_in_los()
+    local was_in_extreme_danger = false
+    if prev_threat_level ~= danger then
+        if danger < prev_threat_level and danger < 2 and prev_threat_level >= 2 then
+            print("You feel safer.")
+        elseif danger < prev_threat_level and danger == 2 then
+            was_in_extreme_danger = true
+        end
+        prev_threat_level = danger
+    else
+        prev_threat_level = danger
+        return
+    end
+
+    if danger < 2 then
+        return
+    end
+
+    if danger == 2 then
+        if was_in_extreme_danger then
+            -- Can be used to prevent force_more if you just deescalated from extremely dangerous
+            print("<yellow>You're still in danger!</yellow>")
+        else
+            print("<yellow>You're in danger!</yellow>")
+        end
+    elseif danger == 3 then
+        print("<lightred>You're in extreme danger!</lightred>")
+    end
+    print_mons_in_sight()
+end
+
+-- Prints a nice colored list of every type of monster we can see and the respective counts.
+-- You can bind this to a custom key, but it's also called when you're in danger automatically.
+function print_mons_in_sight()
+    if tbl_len(spotted_mons) == 0 then
+        print("There are no monsters in sight.")
+        return
+    end
+
+    local str = "Monsters you can see: "
+    for k, v in spairs(spotted_mons, function(t, a, b) return t[a].monster:threat() > t[b].monster:threat() end) do
+        local m = v.count .. "x " .. v.monster:name()
+        local t = v.monster:threat()
+        if t < 2 then
+        str = str .. m .. ", "
+        elseif t == 2 then
+        str = str .. "<yellow>" .. m .. "</yellow>" .. ", "
+        elseif t == 3 then
+        str = str .. "<lightred>" .. m .. "</lightred>" .. ", "
+        end
+    end
+    print(string.sub(str, 0, -3) .. ".")
+end
+
+function print_threats_header()
+    print("<lightcyan>----- Using G3Kappa's Threats Warnings -----</lightcyan>")
+    print("<lightgray>    Max. # of " .. danger_to_glyph(2) .. " enemies to consider " .. danger_to_glyph(1) .. ": " .. DANGER_THRESHOLD_DANGEROUS .. "</lightgray>")
+    print("<lightgray>    Min. # of " .. danger_to_glyph(1) .. " enemies to consider " .. danger_to_glyph(2) .. ": " .. DANGER_GROUP_EASY .. "</lightgray>")
+    print("<lightgray>    Min. # of " .. danger_to_glyph(2) .. " enemies to consider " .. danger_to_glyph(3) .. ": " .. DANGER_GROUP_DANGEROUS .. "</lightgray>")
+    print("<lightcyan>----- Thresholds are halved at 50% HP. -----</lightcyan>")
+end
+
+threat_initialized = false
+function threats_ready()
+    -- Initialize on first turn so that custom options can be loaded first
+    if not threat_initialized then
+        threat_initialized = true
+        print_threats_header()
+    end
+    alert_if_in_danger()
+end
+
+function global_threat_level()
+    return prev_threat_level
+end
+
+local function set_danger_group_easy(key, value, mode)
+    DANGER_GROUP_EASY = tonumber(value) or 5
+end
+local function set_danger_group_dangerous(key, value, mode)
+    DANGER_GROUP_DANGEROUS = tonumber(value) or 3
+end
+local function set_danger_threshold_dangerous(key, value, mode)
+    DANGER_THRESHOLD_DANGEROUS = tonumber(value) or 2
+end
+
+chk_lua_option.danger_group_easy = set_danger_group_easy
+chk_lua_option.danger_group_dangerous = set_danger_group_dangerous
+chk_lua_option.danger_threshold_dangerous = set_danger_threshold_dangerous
+}
+# 4+ easy enemies = Danger!
+danger_group_easy = 4
+# 3+ dangerous enemies= Extreme danger!
+danger_group_dangerous = 3
+# 1 or less dangerous enemies at Danger! = Safe
+danger_threshold_dangerous = 1
+
+force_more_message += You're in danger!
+force_more_message += You're in extreme danger!
+
+# ---- Anti-Panic ----
+# include += antipanic.lua
+{
+---------------------------------------------------------------------------
+-- antipanic.lua
+-- Tries to pre-emptively save your hide before you mess up too bad.
+---------------------------------------------------------------------------
+
+-- Autoquaff a healing potion whenever the next tick of poison would bring you below N% HP
+AUTOQUAFF_POISONED_MAX_HEALTH = 75
+-- Prevent the above unless global_threat_level() >= N
+-- (Possible values: -1 [quaff always], 0 [quaff always if there are enemies], 1 [quaff @ Safe], 2 [quaff @ Danger], 3 [quaff @ Extreme Danger])
+AUTOQUAFF_POISONED_MIN_DANGER = 0
+-- Autoread unidentified scrolls if you have more than N and there are no enemies in sight
+AUTOIDENT_SCROLL_MIN = 2
+-- Autoquaff unidentified potions if you have more than N and there are no enemies in sight
+AUTOIDENT_POTION_MIN = 2
+
+-- nickca changes, heal if health below this
+AUTOQUAFF_HEALING_MAX_HEALTH = 50
+AUTOQUAFF_HEALING_MIN_DANGER = 1
+tried_to_heal = false
+local function autoquaff_healing()
+    local hp_pct = get_hp_pct()
+    if can_quaff() and math.floor(hp_pct * 100) <= AUTOQUAFF_HEALING_MAX_HEALTH and global_threat_level() >= AUTOQUAFF_HEALING_MIN_DANGER then
+        local has_heal, heal = has_item("of heal wounds")
+        if has_heal then
+            local letter = items.index_to_letter(heal.slot)
+            print("<green>[AP]</green> Quaffing potion of heal wounds.")
+            crawl.sendkeys("q" .. letter)
+        elseif not tried_to_heal then
+            print("<red>[AP]</red> Can't heal wounds; no potions of heal wounds were found/identified.")
+            tried_to_heal = true
+        end
+    else
+        tried_to_heal = false
+    end
+end
+-- end nickca changes
+
+tried_to_cure_poison = false
+local function autoquaff_poisoned()
+    local hp_pct = get_hp_pct()
+    if can_quaff() and math.floor(hp_pct * 100) <= AUTOQUAFF_POISONED_MAX_HEALTH and global_threat_level() >= AUTOQUAFF_POISONED_MIN_DANGER then
+        --local has_cure, cure = has_item("potion of curing")
+        local has_cure, cure = has_item("of curing")
+        if has_cure then
+            local letter = items.index_to_letter(cure.slot)
+            print("<green>[AP]</green> Quaffing potion of curing to heal poison.")
+            crawl.sendkeys("q" .. letter)
+        elseif not tried_to_cure_poison then
+            print("<red>[AP]</red> Can't heal poison; no potions of curing were found/identified.")
+            tried_to_cure_poison = true
+        end
+    else
+        tried_to_cure_poison = false
+    end
+end
+
+local function auto_identify()
+    if global_threat_level() > 0 then return end
+    if you.berserk() then return end
+
+    local inv = items.inventory()
+    for _, it in ipairs(inv) do
+        if not it.is_identified then
+            local letter = items.index_to_letter(it.slot)
+            if it.class() == "Scrolls" and it.quantity >= AUTOIDENT_SCROLL_MIN then
+                print("<yellow>[AP]</yellow> Auto-reading unidentified scroll.")
+                crawl.sendkeys("r" .. letter)
+            elseif can_quaff() and it.class() == "Potions" and it.quantity >= AUTOIDENT_POTION_MIN then
+                print("<yellow>[AP]</yellow> Auto-quaffing unidentified potion.")
+                crawl.sendkeys("q" .. letter)
+            end
+        end
+    end
+end
+
+function print_antipanic_header()
+    print("<lightmagenta>----- Using G3Kappa's Antipanic System -----</lightmagenta>")
+    -- nickca changes
+    print("<lightgray>    Autoheal if Health <<= <yellow>" .. AUTOQUAFF_HEALING_MAX_HEALTH .. "</yellow>%</lightgray>")
+    print("<lightgray>    Autoheal if Danger >= " .. danger_to_glyph(AUTOQUAFF_HEALING_MIN_DANGER) .. "</lightgray>")
+    -- end nickca changes
+    print("<lightgray>    Autoheal <green>poison</green> if Health <<= <yellow>" .. AUTOQUAFF_POISONED_MAX_HEALTH .. "</yellow>%</lightgray>")
+    print("<lightgray>    Autoheal <green>poison</green> if Danger >= " .. danger_to_glyph(AUTOQUAFF_POISONED_MIN_DANGER) .. "</lightgray>")
+    print("<lightgray>    Autoident <yellow>scrolls</yellow> if # >= <white>" .. AUTOIDENT_SCROLL_MIN .. "</white></lightgray>")
+    print("<lightgray>    Autoident <yellow>potions</yellow> if # >= <white>" .. AUTOIDENT_POTION_MIN .. "</white></lightgray>")
+    print("<lightmagenta>--------------------------------------------</lightmagenta>")
+end
+
+antipanic_initialized = false
+function antipanic_ready()
+    if not antipanic_initialized then
+        antipanic_initialized = true
+        print_antipanic_header()
+    end
+
+    if you.poisoned() then
+        autoquaff_poisoned()
+    end
+
+    autoquaff_healing()
+
+    auto_identify()
+end
+
+local function set_autoquaff_pois_health(key, value, mode)
+    AUTOQUAFF_POISONED_MAX_HEALTH = tonumber(value) or 75
+end
+chk_lua_option.autoheal_poison_max_health = set_autoquaff_pois_health
+
+local function set_autoquaff_pois_danger(key, value, mode)
+    AUTOQUAFF_POISONED_MIN_DANGER = tonumber(value) or 0
+end
+chk_lua_option.autoheal_poison_min_danger = set_autoquaff_pois_danger
+
+-- nickca changes
+local function set_autoquaff_heal_health(key, value, mode)
+    AUTOQUAFF_HEALING_MAX_HEALTH = tonumber(value) or 50
+end
+chk_lua_option.autoheal_max_health = set_autoquaff_heal_health
+
+local function set_autoquaff_heal_danger(key, value, mode)
+    AUTOQUAFF_HEALING_MIN_DANGER = tonumber(value) or 1
+end
+chk_lua_option.autoheal_min_danger = set_autoquaff_heal_danger
+-- end nickca changes
+
+local function set_autoident_scroll_min(key, value, mode)
+    AUTOIDENT_SCROLL_MIN = tonumber(value) or 2
+end
+chk_lua_option.autoident_scroll_min = set_autoident_scroll_min
+
+local function set_autoident_potion_min(key, value, mode)
+    AUTOIDENT_POTION_MIN = tonumber(value) or 2
+end
+chk_lua_option.autoident_potion_min = set_autoident_potion_min
+
+}
+
+autoheal_poison_max_health = 75
+autoheal_poison_min_danger = 0
+-- nickca changes
+autoheal_max_health = 50
+autoheal_min_danger = 1
+-- end nickca changes
+
+autoident_scroll_min = 2
+autoident_potion_min = 2
+
+force_more_message += \[AP\]
+
+# ---- Bootstrap ----
+# include += bootstrap.lua
+{
+---------------------------------------------------------------------------
+-- bootstrap.lua
+-- Loads my other scripts and ensures proper control flow.
+---------------------------------------------------------------------------
+function print(str)
+    crawl.mpr(str)
+    crawl.flush_prev_message()
+end
+
+function get_hp_pct()
+    local hp, maxhp = you.hp()
+    return hp / maxhp
+end
+
+function can_quaff()
+    if you.race() == "Mummy" or you.berserk() then
+        return false
+    end
+    local tran = you.transform()
+    if tran == "Necromutation" or tran == "Tree Form" or tran == "Wisp Form" or tran == "Bat Form" then
+        return false
+    end
+    return true
+end
+
+function has_item(name)
+    local inv = items.inventory()
+    for _, it in ipairs(inv) do
+        --if it.name() == name then return true, it end
+        if string.find(it.name(), name) then
+            return true, it
+        end
+    end
+    return false, nil
+end
+
+-- Helper that iterates a dictionary in a specific order
+function spairs(t, order)
+    -- collect the keys
+    local keys = {}
+    for k in pairs(t) do keys[#keys+1] = k end
+
+    -- if order function given, sort by it by passing the table and keys a, b,
+    -- otherwise just sort the keys 
+    if order then
+        table.sort(keys, function(a,b) return order(t, a, b) end)
+    else
+        table.sort(keys)
+    end
+
+    -- return the iterator function
+    local i = 0
+    return function()
+        i = i + 1
+        if keys[i] then
+            return keys[i], t[keys[i]]
+        end
+    end
+end
+
+function ready()
+    threats_ready()
+    antipanic_ready()
+end
+}
